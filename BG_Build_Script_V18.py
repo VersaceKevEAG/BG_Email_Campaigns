@@ -990,10 +990,11 @@ function renderCampaign(){
     <button class="cmd-btn cmd-btn-secondary" onclick="runCompliance()" style="margin-bottom:8px;">Run Email Compliance Check</button>
     <div id="comp-results" style="margin-bottom:10px;"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="cmd-btn cmd-btn-primary" onclick="pushToHS('draft')">Save as HubSpot Draft</button>
+      <button class="cmd-btn cmd-btn-primary" onclick="pushToHS('draft')">Push as Draft to HubSpot</button>
       <button class="cmd-btn cmd-btn-orange" onclick="pushToHS('send')">Push &amp; Schedule Send</button>
     </div>
-    <p style="font-size:10px;color:#666;margin-top:7px;">Draft saves to HubSpot Marketing &rarr; Email for review before sending.</p>
+    <p style="font-size:10px;color:#888;margin-top:7px;">Creates a draft in HubSpot. You can review and send from there.</p>
+    <div id="hs-push-result" style="display:none;margin-top:10px;padding:10px 14px;background:#0a0a0a;border:1px solid #1a3a2a;border-radius:4px;border-left:3px solid #22c55e;"></div>
   </div>
   <div class="cmd-section">
     <div class="cmd-section-title">Activity Log</div>
@@ -1128,7 +1129,7 @@ function pushToHS(mode){
   var btn=mode==='send'?document.querySelectorAll('[onclick="pushToHS(\'send\')"]')[0]:document.querySelectorAll('[onclick="pushToHS(\'draft\')"]')[0];
   if(btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Pushing...';}
   hsPost('/marketing/v3/emails',payload,function(res,err,status){
-    if(btn){btn.disabled=false;btn.innerHTML=mode==='send'?'Push & Schedule Send':'Save as HubSpot Draft';}
+    if(btn){btn.disabled=false;btn.innerHTML=mode==='send'?'Push & Schedule Send':'Push as Draft to HubSpot';}
     if(err){
       addLog('err','Push failed: '+err);
       showErr('HubSpot error: '+err);
@@ -1137,6 +1138,13 @@ function pushToHS(mode){
     var hsId=res&&(res.id||res.hs_object_id||'');
     addLog('ok',mode==='send'?'Campaign scheduled in HubSpot (ID: '+hsId+')':'Draft saved in HubSpot (ID: '+hsId+')');
     showToast(mode==='send'?'Campaign pushed to HubSpot and scheduled!':'Draft saved in HubSpot. Open HubSpot to review and send.');
+    // Show direct link to HubSpot email
+    var resultEl=document.getElementById('hs-push-result');
+    if(resultEl&&hsId){
+      var hsLink=HS_PORTAL_ID?'https://app.hubspot.com/email/'+HS_PORTAL_ID+'/edit/'+hsId+'/settings':'';
+      resultEl.style.display='block';
+      resultEl.innerHTML='<div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#22c55e;margin-bottom:4px;">'+(mode==='send'?'Campaign Scheduled':'Draft Created')+'</div><p style="font-size:12px;color:#aaa;margin:0 0 6px;">HubSpot Email ID: <strong style="color:#fff;">'+esc(hsId)+'</strong></p>'+(hsLink?'<a href="'+hsLink+'" target="_blank" style="font-size:11px;color:#3ecfcf;text-decoration:underline;">Open in HubSpot &#8599;</a>':'');
+    }
     // Record in analytics
     var rec={ts:ts(),templateId:id,templateName:d.name,campaignName:campName.value,hsId:hsId,mode:mode,listId:listSel?listSel.value:'',opens:0,clicks:0,unsubscribes:0,bounces:0,delivered:0};
     ANALYTICS.push(rec);
