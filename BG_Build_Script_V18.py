@@ -61,6 +61,11 @@ print(f'  {len(I)} images loaded OK')
 TEAL = '#3ecfcf'
 SE = 'sales [at] beargrinder.com'
 
+# Shopify CTA URLs
+SHOP_URL = 'https://beargrinder.com/collections/all'
+CONTACT_URL = 'mailto:Hello@BearGrinder.com'
+REORDER_URL = 'https://beargrinder.com/collections/all'
+
 LOGO_W = '''<svg viewBox="0 0 210 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="160" height="30"><circle cx="20" cy="20" r="17" stroke="white" stroke-width="2.2" fill="none"/><circle cx="10.5" cy="8.5" r="1.8" fill="white"/><circle cx="15" cy="5.5" r="1.8" fill="white"/><circle cx="20" cy="4.5" r="1.8" fill="white"/><circle cx="25" cy="5.5" r="1.8" fill="white"/><circle cx="29.5" cy="8.5" r="1.8" fill="white"/><path d="M20 10.5 C15.5 10.5 11.5 13.5 11 18 C10.5 22.5 12.5 27 16 28.5 C17.5 29.2 22.5 29.2 24 28.5 C27.5 27 29.5 22.5 29 18 C28.5 13.5 24.5 10.5 20 10.5Z" fill="white"/><text x="46" y="26" font-family="'Trebuchet MS','Arial Narrow',Arial,sans-serif" font-size="17" font-weight="900" letter-spacing="3" fill="white">BEAR GRINDER</text></svg>'''
 
 LOGO_B = '''<svg viewBox="0 0 210 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="160" height="30"><circle cx="20" cy="20" r="17" stroke="black" stroke-width="2.2" fill="none"/><circle cx="10.5" cy="8.5" r="1.8" fill="black"/><circle cx="15" cy="5.5" r="1.8" fill="black"/><circle cx="20" cy="4.5" r="1.8" fill="black"/><circle cx="25" cy="5.5" r="1.8" fill="black"/><circle cx="29.5" cy="8.5" r="1.8" fill="black"/><path d="M20 10.5 C15.5 10.5 11.5 13.5 11 18 C10.5 22.5 12.5 27 16 28.5 C17.5 29.2 22.5 29.2 24 28.5 C27.5 27 29.5 22.5 29 18 C28.5 13.5 24.5 10.5 20 10.5Z" fill="black"/><text x="46" y="26" font-family="'Trebuchet MS','Arial Narrow',Arial,sans-serif" font-size="17" font-weight="900" letter-spacing="3" fill="black">BEAR GRINDER</text></svg>'''
@@ -103,15 +108,27 @@ def sal(light=False):
     return f'<p contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:{c};margin:0 0 18px;padding:0;">Hi [firstname],</p>'
 def div_line(light=False):
     return f'<div style="height:1px;background:{"#e8e8e8" if light else "#111"};"></div>'
-def btn_w(lbl,note=''):
+def _btn_url(lbl):
+    """Auto-detect CTA URL from button label."""
+    up=lbl.upper()
+    if any(k in up for k in ['REPLY','TALK','RECONNECT','CONNECT','SCHEDULE','REPLY HERE']):
+        return CONTACT_URL
+    if 'REORDER' in up:
+        return REORDER_URL
+    return SHOP_URL
+
+def btn_w(lbl,note='',url=None):
+    href=url or _btn_url(lbl)
     n=f'<div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.06em;margin-top:8px;">{note}</div>' if note else ''
-    return f'<div style="background:#000;padding:26px 32px;text-align:center;"><a href="#" contenteditable="true" style="display:inline-block;background:#fff;color:#000;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:14px 40px;text-decoration:none;">{lbl}</a>{n}</div>'
-def btn_b(lbl,note=''):
+    return f'<div style="background:#000;padding:26px 32px;text-align:center;"><a href="{href}" contenteditable="true" style="display:inline-block;background:#fff;color:#000;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:14px 40px;text-decoration:none;">{lbl}</a>{n}</div>'
+def btn_b(lbl,note='',url=None):
+    href=url or _btn_url(lbl)
     n=f'<div contenteditable="true" style="font-size:11px;color:#bbb;letter-spacing:.06em;margin-top:8px;">{note}</div>' if note else ''
-    return f'<div style="background:#fff;padding:26px 32px;text-align:center;"><a href="#" contenteditable="true" style="display:inline-block;background:#000;color:#fff;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:14px 40px;text-decoration:none;">{lbl}</a>{n}</div>'
-def btn_t(lbl,note=''):
+    return f'<div style="background:#fff;padding:26px 32px;text-align:center;"><a href="{href}" contenteditable="true" style="display:inline-block;background:#000;color:#fff;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:14px 40px;text-decoration:none;">{lbl}</a>{n}</div>'
+def btn_t(lbl,note='',url=None):
+    href=url or _btn_url(lbl)
     n=f'<div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.06em;margin-top:8px;">{note}</div>' if note else ''
-    return f'<div style="background:#000;padding:26px 32px;text-align:center;"><a href="#" contenteditable="true" style="display:inline-block;background:{TEAL};color:#000;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:14px 40px;text-decoration:none;">{lbl}</a>{n}</div>'
+    return f'<div style="background:#000;padding:26px 32px;text-align:center;"><a href="{href}" contenteditable="true" style="display:inline-block;background:{TEAL};color:#000;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:14px 40px;text-decoration:none;">{lbl}</a>{n}</div>'
 def promo_d(code,sub,note=''):
     n=f'<div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.06em;margin-top:6px;">{note}</div>' if note else ''
     return f'<div style="background:#000;padding:32px;text-align:center;border-top:1px solid #111;border-bottom:1px solid #111;"><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:10px;">PROMO CODE</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:48px;font-weight:900;letter-spacing:.1em;color:{TEAL};line-height:1;">{code}</div><div contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.6);letter-spacing:.08em;margin-top:8px;">{sub}</div>{n}</div>'
