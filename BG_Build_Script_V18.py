@@ -1454,6 +1454,10 @@ function renderAIInsights(){
 async function runAIAnalysis(){
   var el=document.getElementById('ai-insights-container');
   var scoreel=document.getElementById('ai-score-display');
+  if(!ANTHROPIC_KEY){
+    if(el) el.innerHTML='<div style="font-size:12px;color:#ef4444;padding:8px 0;">Anthropic API key required. Enter it in the AI Editor first (open any template, click AI Edit, and enter your key). Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:#a855f7;">console.anthropic.com</a></div>';
+    return;
+  }
   if(el) el.innerHTML='<div style="display:flex;align-items:center;gap:8px;color:#555;font-size:12px;padding:8px 0;"><span class="spinner"></span> Analyzing templates with AI...</div>';
   // Build summary of templates + any analytics data
   var tmplSummary=Object.keys(DATA).map(function(id){
@@ -1466,7 +1470,7 @@ async function runAIAnalysis(){
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-dangerous-direct-browser-access':'true','anthropic-version':'2023-06-01'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
