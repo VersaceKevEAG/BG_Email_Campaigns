@@ -592,6 +592,14 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 .abtn-bug{background:#1a1a1a;border:1px solid #2a2a2a;color:#888;transition:all .12s}
 .abtn-bug:hover{border-color:#ef4444;color:#ef4444}
 
+/* ── AI EDIT MODAL ── */
+.ai-modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px}
+.ai-modal-inner{background:#111;border:1px solid #222;border-radius:8px;padding:22px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto}
+.ai-diff{display:flex;gap:12px;margin:12px 0}
+@media(max-width:700px){.ai-diff{flex-direction:column}}
+.ai-diff-panel{flex:1;background:#0a0a0a;border:1px solid #1e1e1e;border-radius:4px;padding:10px;max-height:300px;overflow-y:auto;font-size:11px;color:#aaa;line-height:1.6}
+.ai-diff-label{font-family:'Trebuchet MS',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+
 /* ── CUSTOM TEMPLATES ── */
 .custom-section{padding:8px 0;border-top:1px solid #1e1e1e}
 .custom-hdr{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#f97316;padding:10px 16px 6px;display:flex;align-items:center;gap:6px}
@@ -1874,6 +1882,103 @@ function submitBugReport() {
 /* COUPON STATUS */
 
 
+
+
+/* ============================================================
+   AI-POWERED TEMPLATE EDITING (Change 7)
+   ============================================================ */
+var AI_EDIT_RESULT=null;
+function openAIEdit(){
+  if(document.getElementById('ai-edit-modal')) return;
+  var modal=document.createElement('div');
+  modal.id='ai-edit-modal';
+  modal.className='ai-modal';
+  modal.innerHTML=[
+    '<div class="ai-modal-inner">',
+    '<div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#a855f7;margin-bottom:6px;">&#10024; AI Template Editor</div>',
+    '<p style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.6;">Describe what you want changed in plain language. The AI will adjust the copy while keeping all styling and images intact.</p>',
+    '<div style="margin-bottom:12px;">',
+    '<div style="font-size:9px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#777;margin-bottom:5px;">What should change?</div>',
+    '<textarea id="ai-edit-input" rows="3" placeholder="e.g. Make the tone more casual, shorten by half, focus on wholesale pricing..." style="width:100%;background:#0d0d0d;border:1px solid #222;border-radius:4px;padding:10px 12px;font-size:14px;color:#fff;font-family:\'Helvetica Neue\',Arial,sans-serif;outline:none;resize:vertical;box-sizing:border-box;"></textarea>',
+    '</div>',
+    '<div id="ai-edit-status" style="display:none;margin-bottom:12px;"></div>',
+    '<div id="ai-edit-preview" style="display:none;"></div>',
+    '<div style="display:flex;gap:8px;" id="ai-edit-actions">',
+    '<button id="ai-gen-btn" style="flex:1;padding:11px;background:#a855f7;border:none;border-radius:4px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;cursor:pointer;" onclick="runAIEdit()">Generate</button>',
+    '<button onclick="document.getElementById(\'ai-edit-modal\').remove()" style="padding:11px 16px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:4px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#666;cursor:pointer;">Cancel</button>',
+    '</div>',
+    '</div>'
+  ].join('');
+  document.body.appendChild(modal);
+  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
+  setTimeout(function(){var el=document.getElementById('ai-edit-input');if(el)el.focus();},100);
+}
+
+async function runAIEdit(){
+  var input=document.getElementById('ai-edit-input');
+  var status=document.getElementById('ai-edit-status');
+  var preview=document.getElementById('ai-edit-preview');
+  var genBtn=document.getElementById('ai-gen-btn');
+  if(!input||!input.value.trim()){if(input)input.style.borderColor='#ef4444';return;}
+  var userReq=input.value.trim();
+  var cardId=CUR&&CUR.indexOf('custom_')===0?'card-custom-active':'card-'+CUR;
+  var card=document.getElementById(cardId);
+  if(!card){showToast('No template selected');return;}
+  var currentHTML=card.innerHTML;
+  // Show loading
+  if(status){status.style.display='block';status.innerHTML='<div style="display:flex;align-items:center;gap:8px;color:#a855f7;font-size:12px;padding:4px 0;"><span class="spinner" style="border-top-color:#a855f7;"></span> AI is working on your changes...</div>';}
+  if(genBtn){genBtn.disabled=true;genBtn.textContent='Generating...';}
+  if(preview) preview.style.display='none';
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:4000,
+        system:"You are the Bear Grinder brand copywriter. Bear Grinder is a premium herb grinder brand. Key facts: 608 ball bearing system (3-4 rotations for a complete grind), threadless magnetic closure (neodymium magnets), precision-engineered high-low tooth design, aerospace-grade aluminum, CNC-machined from a single solid block. MSRP: $49.99. Brand rules: NEVER use em dashes. NEVER mention patents in customer-facing copy (use 'precision-engineered' instead). Always say B2C not D2C. The tone is confident, direct, product-forward. The bearing spin is the hook - it is tactile and shareable. Write like a sharp human marketer, not a machine. Keep the same HTML structure, only change the text content inside contenteditable elements.",
+        messages:[{role:'user',content:"Here is the current email HTML:\n\n"+currentHTML+"\n\nUser request: "+userReq+"\n\nReturn ONLY the modified HTML. Keep all styling, structure, and image references exactly the same. Only modify text content."}]
+      })
+    });
+    var data=await resp.json();
+    if(data.error){throw new Error(data.error.message||'API error');}
+    var text=(data.content&&data.content[0]&&data.content[0].text)||'';
+    AI_EDIT_RESULT=text;
+    // Show before/after preview
+    if(preview){
+      preview.style.display='block';
+      preview.innerHTML='<div class="ai-diff"><div style="flex:1;"><div class="ai-diff-label" style="color:#ef4444;">Before</div><div class="ai-diff-panel">'+currentHTML.replace(/<img[^>]*>/g,'[IMG]').substring(0,2000)+'</div></div><div style="flex:1;"><div class="ai-diff-label" style="color:#22c55e;">After (AI)</div><div class="ai-diff-panel">'+text.replace(/<img[^>]*>/g,'[IMG]').substring(0,2000)+'</div></div></div>';
+    }
+    if(status){status.style.display='block';status.innerHTML='<div style="font-size:12px;color:#22c55e;padding:4px 0;">AI changes ready. Review below, then Apply or Cancel.</div>';}
+    // Replace Generate button with Apply/Cancel
+    var actions=document.getElementById('ai-edit-actions');
+    if(actions){
+      actions.innerHTML='<button style="flex:1;padding:11px;background:#22c55e;border:none;border-radius:4px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;" onclick="applyAIEdit()">Apply Changes</button><button style="padding:11px 16px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:4px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#666;cursor:pointer;" onclick="document.getElementById(\'ai-edit-modal\').remove()">Cancel</button>';
+    }
+    addLog('ok','AI edit generated for '+CUR);
+  }catch(e){
+    if(status){status.style.display='block';status.innerHTML='<div style="font-size:12px;color:#ef4444;padding:4px 0;">AI edit failed: '+esc(e.message)+'</div>';}
+    if(genBtn){genBtn.disabled=false;genBtn.textContent='Generate';}
+    addLog('err','AI edit error: '+e.message);
+  }
+}
+
+function applyAIEdit(){
+  if(!AI_EDIT_RESULT) return;
+  var cardId=CUR&&CUR.indexOf('custom_')===0?'card-custom-active':'card-'+CUR;
+  var card=document.getElementById(cardId);
+  if(card){
+    card.innerHTML=AI_EDIT_RESULT;
+    // If custom template, save permanently
+    if(CUR&&CUR.indexOf('custom_')===0) saveCustomEdits();
+    showToast('AI changes applied');
+    addLog('ok','AI edit applied to '+CUR);
+  }
+  AI_EDIT_RESULT=null;
+  var modal=document.getElementById('ai-edit-modal');
+  if(modal) modal.remove();
+}
+
 /* ============================================================
    CUSTOM TEMPLATES (Change 6)
    ============================================================ */
@@ -2173,7 +2278,7 @@ HTML = f"""<!DOCTYPE html>
       <button class="etool" onclick="fmt('justifyLeft')">&#8676;</button>
       <button class="etool" onclick="fmt('justifyCenter')">&#8596;</button>
       <button class="etool" onclick="fmt('justifyRight')">&#8677;</button>
-      <button class="ereset" style="margin-left:0;" onclick="duplicateTemplate()">&#128203; Duplicate</button><button class="ereset" onclick="doReset()">&#8635; Reset</button>
+      <button class="ereset" style="margin-left:0;" onclick="duplicateTemplate()">&#128203; Duplicate</button><button class="ereset" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:#a855f7;" onclick="openAIEdit()">&#10024; AI Edit</button><button class="ereset" onclick="doReset()">&#8635; Reset</button>
     </div>
 
     <div class="scroller" id="scroller">
