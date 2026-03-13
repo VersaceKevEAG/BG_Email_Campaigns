@@ -19,7 +19,7 @@ import io
 #   tooth      = Copy_of_Tooth_2.png
 #   collect    = Large_Collection_Chamber.png
 
-PROJECT = '/mnt/project'
+PROJECT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images')
 
 def load_img(filename, width=600, quality=72, fmt='JPEG'):
     """Load from /mnt/project/, resize to width, return data URI. Never fails silently."""
@@ -40,7 +40,7 @@ def load_img(filename, width=600, quality=72, fmt='JPEG'):
     b64str = base64.b64encode(buf.getvalue()).decode()
     return f'data:{mime};base64,{b64str}'
 
-print('Loading images from /mnt/project/...')
+print(f'Loading images from {PROJECT}...')
 I = {
     'hero':       load_img('Main_Splash_Banner_Image.png',         600, 75),
     'side_black': load_img('Copy_of_Easy_Lid1.png',                600, 75),   # was r_orig_5491
@@ -2677,7 +2677,7 @@ HTML = f"""<!DOCTYPE html>
 </body>
 </html>"""
 
-out='/mnt/user-data/outputs/BG_Email_Campaign_Command_Center_V18.html'
+out=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'index.html')
 with open(out,'w',encoding='utf-8') as f:
     f.write(HTML)
 
