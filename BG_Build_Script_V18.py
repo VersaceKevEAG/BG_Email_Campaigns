@@ -2197,6 +2197,7 @@ function pushBackToHS(idx){
    AI-POWERED TEMPLATE EDITING (Change 7)
    ============================================================ */
 var AI_EDIT_RESULT=null;
+var ANTHROPIC_KEY='';  // Anthropic API key - session only, never saved
 function openAIEdit(){
   if(document.getElementById('ai-edit-modal')) return;
   var modal=document.createElement('div');
@@ -2206,6 +2207,11 @@ function openAIEdit(){
     '<div class="ai-modal-inner">',
     '<div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#a855f7;margin-bottom:6px;">&#10024; AI Template Editor</div>',
     '<p style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.6;">Describe what you want changed in plain language. The AI will adjust the copy while keeping all styling and images intact.</p>',
+    '<div style="margin-bottom:12px;">',
+    '<div style="font-size:9px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#777;margin-bottom:5px;">Anthropic API Key</div>',
+    '<input type="password" id="ai-api-key" placeholder="sk-ant-..." value="'+(ANTHROPIC_KEY||'')+'" style="width:100%;background:#0d0d0d;border:1px solid #222;border-radius:4px;padding:8px 12px;font-size:13px;color:#fff;font-family:\'Helvetica Neue\',Arial,sans-serif;outline:none;box-sizing:border-box;margin-bottom:4px;" />',
+    '<div style="font-size:10px;color:#555;margin-bottom:14px;">Your key is stored in memory only for this session. Never saved to disk.</div>',
+    '</div>',
     '<div style="margin-bottom:12px;">',
     '<div style="font-size:9px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#777;margin-bottom:5px;">What should change?</div>',
     '<textarea id="ai-edit-input" rows="3" placeholder="e.g. Make the tone more casual, shorten by half, focus on wholesale pricing..." style="width:100%;background:#0d0d0d;border:1px solid #222;border-radius:4px;padding:10px 12px;font-size:14px;color:#fff;font-family:\'Helvetica Neue\',Arial,sans-serif;outline:none;resize:vertical;box-sizing:border-box;"></textarea>',
@@ -2228,6 +2234,14 @@ async function runAIEdit(){
   var status=document.getElementById('ai-edit-status');
   var preview=document.getElementById('ai-edit-preview');
   var genBtn=document.getElementById('ai-gen-btn');
+  var keyInput=document.getElementById('ai-api-key');
+  // Save key to session variable
+  if(keyInput&&keyInput.value.trim()) ANTHROPIC_KEY=keyInput.value.trim();
+  if(!ANTHROPIC_KEY){
+    if(status){status.style.display='block';status.innerHTML='<div style="font-size:12px;color:#ef4444;padding:4px 0;">Enter your Anthropic API key above. Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:#a855f7;">console.anthropic.com</a></div>';}
+    if(keyInput) keyInput.style.borderColor='#ef4444';
+    return;
+  }
   if(!input||!input.value.trim()){if(input)input.style.borderColor='#ef4444';return;}
   var userReq=input.value.trim();
   var cardId=CUR&&CUR.indexOf('custom_')===0?'card-custom-active':'card-'+CUR;
@@ -2241,7 +2255,7 @@ async function runAIEdit(){
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-dangerous-direct-browser-access':'true','anthropic-version':'2023-06-01'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:4000,
