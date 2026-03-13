@@ -654,6 +654,7 @@ document.addEventListener('DOMContentLoaded',function(){
       if(c) origHTML[id]=c.innerHTML;
     });
     loadCustomTemplates();
+    loadContactList();
     var fb=document.getElementById('btn-e01a');
     if(fb) fb.classList.add('active');
     // Load persisted analytics/insights from localStorage (non-sensitive data only)
@@ -844,6 +845,28 @@ function renderConnect(){
   <div class="cmd-section">
     <div class="cmd-section-title">Security Note</div>
     <p style="font-size:11px;color:#888;line-height:1.7;">Your API key is held in memory only for this session. It is never written to disk, localStorage, or sent anywhere except directly to api.hubapi.com over HTTPS. Close this tab to clear it.</p>
+  </div>
+  <div class="cmd-section">
+    <div class="cmd-section-title" style="display:flex;align-items:center;gap:8px;">Contact Lists <span id="contact-count-badge" style="background:rgba(62,207,207,.1);border:1px solid rgba(62,207,207,.25);border-radius:10px;padding:2px 8px;font-size:9px;color:#3ecfcf;">0 contacts</span></div>
+    <p style="font-size:11px;color:#888;line-height:1.6;margin-bottom:12px;">Build a quick contact list and sync to HubSpot without leaving this tool.</p>
+    <div class="cmd-row">
+      <div class="cmd-field"><label class="cmd-label">Name</label><input class="cmd-input" id="cl-name" placeholder="John Smith"/></div>
+      <div class="cmd-field"><label class="cmd-label">Email</label><input class="cmd-input" id="cl-email" placeholder="john@example.com" type="email"/></div>
+    </div>
+    <div class="cmd-row">
+      <div class="cmd-field"><label class="cmd-label">Company (optional)</label><input class="cmd-input" id="cl-company" placeholder="Acme Inc"/></div>
+      <div class="cmd-field"><label class="cmd-label">Tags (optional)</label><input class="cmd-input" id="cl-tags" placeholder="wholesale, priority"/></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+      <button class="cmd-btn cmd-btn-primary" onclick="addContact()">Add Contact</button>
+      <label class="cmd-btn cmd-btn-secondary" style="cursor:pointer;display:flex;align-items:center;gap:4px;">CSV Upload <input type="file" accept=".csv" id="cl-csv" style="display:none;" onchange="uploadContactCSV()"/></label>
+    </div>
+    <div id="cl-table-container" style="margin-top:12px;max-height:300px;overflow-y:auto;"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+      <button class="cmd-btn cmd-btn-primary" onclick="syncContactsToHS()" ${!HS_CONNECTED?'disabled':''}>Sync to HubSpot</button>
+      <button class="cmd-btn cmd-btn-secondary" onclick="clearContacts()">Clear All</button>
+    </div>
+    <div id="cl-log" style="margin-top:8px;"></div>
   </div>
 </div>`;
 }
@@ -1893,6 +1916,149 @@ function submitBugReport() {
 
 
 
+
+/* ============================================================
+   SHOPIFY PLACEHOLDER (Change 11)
+   ============================================================ */
+function showShopifyInfo(){
+  if(document.getElementById('shopify-modal')) return;
+  var modal=document.createElement('div');
+  modal.id='shopify-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.innerHTML=[
+    '<div style="background:#111;border:1px solid #222;border-radius:8px;padding:22px;width:100%;max-width:440px;">',
+    '<div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#22c55e;margin-bottom:6px;">Shopify Revenue Tracking</div>',
+    '<p style="font-size:12px;color:#aaa;margin-bottom:14px;line-height:1.7;">Shopify revenue tracking requires connecting your Shopify store to HubSpot. Once connected, this dashboard will show revenue attributed to email campaigns.</p>',
+    '<div style="background:#0a0a0a;border:1px solid #1e1e1e;border-radius:4px;padding:12px;margin-bottom:14px;">',
+    '<div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#777;margin-bottom:8px;">Setup Steps</div>',
+    '<div style="font-size:12px;color:#888;line-height:2;">1. Open HubSpot &rarr; App Marketplace<br>2. Search for "Shopify"<br>3. Install the Shopify integration<br>4. Connect your beargrinder.com Shopify store<br>5. Revenue data will sync automatically</div>',
+    '</div>',
+    '<button onclick="document.getElementById(\'shopify-modal\').remove()" style="width:100%;padding:11px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:4px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#888;cursor:pointer;">Got It</button>',
+    '</div>'
+  ].join('');
+  document.body.appendChild(modal);
+  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
+}
+
+/* ============================================================
+   CONTACT LIST BUILDER (Change 16)
+   ============================================================ */
+var CONTACT_LIST=[];
+function loadContactList(){
+  try{var saved=localStorage.getItem('bg_contact_builder');if(saved)CONTACT_LIST=JSON.parse(saved);}catch(e){}
+  updateContactBadge();
+}
+function saveContactList(){
+  try{localStorage.setItem('bg_contact_builder',JSON.stringify(CONTACT_LIST));}catch(e){}
+  updateContactBadge();
+}
+function updateContactBadge(){
+  var badge=document.getElementById('contact-count-badge');
+  if(badge) badge.textContent=CONTACT_LIST.length+' contact'+(CONTACT_LIST.length!==1?'s':'');
+}
+function addContact(){
+  var nameEl=document.getElementById('cl-name');
+  var emailEl=document.getElementById('cl-email');
+  var compEl=document.getElementById('cl-company');
+  var tagsEl=document.getElementById('cl-tags');
+  if(!emailEl||!emailEl.value.trim()||emailEl.value.indexOf('@')<0){
+    if(emailEl) emailEl.style.borderColor='#ef4444';return;
+  }
+  CONTACT_LIST.push({
+    name:nameEl?nameEl.value.trim():'',
+    email:emailEl.value.trim(),
+    company:compEl?compEl.value.trim():'',
+    tags:tagsEl?tagsEl.value.trim():''
+  });
+  saveContactList();
+  if(nameEl)nameEl.value='';if(emailEl)emailEl.value='';if(compEl)compEl.value='';if(tagsEl)tagsEl.value='';
+  renderContactTable();
+  showToast('Contact added');
+}
+function removeContact(idx){
+  CONTACT_LIST.splice(idx,1);
+  saveContactList();
+  renderContactTable();
+}
+function clearContacts(){
+  if(!CONTACT_LIST.length) return;
+  if(!confirm('Clear all '+CONTACT_LIST.length+' contacts?')) return;
+  CONTACT_LIST=[];
+  saveContactList();
+  renderContactTable();
+  showToast('Contact list cleared');
+}
+function renderContactTable(){
+  var container=document.getElementById('cl-table-container');
+  if(!container) return;
+  if(!CONTACT_LIST.length){container.innerHTML='';return;}
+  var rows=CONTACT_LIST.map(function(c,i){
+    return '<tr><td>'+esc(c.name)+'</td><td>'+esc(c.email)+'</td><td>'+esc(c.company)+'</td><td>'+esc(c.tags)+'</td><td><button onclick="removeContact('+i+')" style="background:none;border:none;color:#555;cursor:pointer;font-size:13px;">&times;</button></td></tr>';
+  }).join('');
+  container.innerHTML='<table class="data-table"><tr><th>Name</th><th>Email</th><th>Company</th><th>Tags</th><th></th></tr>'+rows+'</table>';
+}
+function uploadContactCSV(){
+  var fileInput=document.getElementById('cl-csv');
+  if(!fileInput||!fileInput.files||!fileInput.files[0]) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var lines=e.target.result.split('\n').filter(function(l){return l.trim();});
+    if(lines.length<2){showToast('CSV needs a header row and at least one contact');return;}
+    var headers=lines[0].split(',').map(function(h){return h.trim().toLowerCase().replace(/"/g,'');});
+    var emailCol=headers.indexOf('email');
+    var nameCol=Math.max(headers.indexOf('name'),headers.indexOf('firstname'));
+    var compCol=headers.indexOf('company');
+    if(emailCol<0){showToast('CSV must have an "email" column');return;}
+    var added=0;
+    for(var i=1;i<lines.length;i++){
+      var cols=lines[i].split(',').map(function(c){return c.trim().replace(/"/g,'');});
+      if(cols[emailCol]&&cols[emailCol].indexOf('@')>-1){
+        CONTACT_LIST.push({
+          name:nameCol>-1?cols[nameCol]||'':'',
+          email:cols[emailCol],
+          company:compCol>-1?cols[compCol]||'':'',
+          tags:''
+        });
+        added++;
+      }
+    }
+    saveContactList();
+    renderContactTable();
+    showToast(added+' contacts imported from CSV');
+    addLog('ok','CSV upload: '+added+' contacts added to builder');
+  };
+  reader.readAsText(fileInput.files[0]);
+  fileInput.value='';
+}
+function syncContactsToHS(){
+  if(!HS_CONNECTED){showErr('Connect HubSpot first.');return;}
+  if(!CONTACT_LIST.length){showToast('No contacts to sync');return;}
+  var log=document.getElementById('cl-log');
+  if(log) log.innerHTML='<div class="log-entry"><span class="ts">'+ts()+'</span><span class="info">Creating list and syncing '+CONTACT_LIST.length+' contacts...</span></div>';
+  var listName='BG Tool Import - '+new Date().toLocaleDateString();
+  hsPost('/contacts/v1/lists',{name:listName,dynamic:false},function(listRes,listErr){
+    if(listErr||!listRes||!listRes.listId){
+      if(log) log.innerHTML='<div class="log-entry"><span class="err">Failed to create list: '+(listErr||'unknown')+'</span></div>';
+      return;
+    }
+    var vids=CONTACT_LIST.map(function(c){
+      var parts=c.name.split(' ');
+      return{email:c.email,properties:[
+        {property:'email',value:c.email},
+        {property:'firstname',value:parts[0]||''},
+        {property:'lastname',value:parts.slice(1).join(' ')||''},
+        {property:'company',value:c.company||''}
+      ]};
+    });
+    hsPost('/contacts/v1/contact/batch/',{contact:vids},function(){
+      if(log) log.innerHTML='<div class="log-entry"><span class="ts">'+ts()+'</span><span class="ok">'+CONTACT_LIST.length+' contacts synced to HubSpot list "'+listName+'"</span></div>';
+      addLog('ok','Synced '+CONTACT_LIST.length+' contacts to HubSpot list: '+listName);
+      showToast('Contacts synced to HubSpot');
+      fetchLists();
+    });
+  });
+}
+
 /* ============================================================
    IMPORT FROM HUBSPOT (Change 9)
    ============================================================ */
@@ -2392,6 +2558,18 @@ HTML = f"""<!DOCTYPE html>
           <button onclick="resetDashboard()" style="padding:9px 14px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:4px;font-family:'Trebuchet MS',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#444;cursor:pointer;">Reset Local</button>
         </div>
         <div id="dash-hs-status" style="font-size:11px;color:#333;text-align:center;padding:6px 0;"></div>
+      </div>
+
+      <!-- REVENUE ATTRIBUTION (Shopify placeholder) -->
+      <div class="cmd-section">
+        <div class="cmd-section-title">Revenue Attribution</div>
+        <p style="font-size:11px;color:#999;margin-bottom:12px;line-height:1.6;">Track revenue generated from email campaigns by connecting Shopify data through HubSpot.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">
+          <div class="metric-card"><div class="metric-val" style="color:#22c55e;">$--</div><div class="metric-lbl">Revenue from Email</div><div style="font-size:9px;color:#666;margin-top:4px;">Connect Shopify to enable</div></div>
+          <div class="metric-card"><div class="metric-val" style="color:#3ecfcf;">--</div><div class="metric-lbl">Orders from Email</div><div style="font-size:9px;color:#666;margin-top:4px;">Connect Shopify to enable</div></div>
+          <div class="metric-card"><div class="metric-val" style="color:#a855f7;">$--</div><div class="metric-lbl">Avg Order Value</div><div style="font-size:9px;color:#666;margin-top:4px;">Connect Shopify to enable</div></div>
+        </div>
+        <button class="cmd-btn cmd-btn-secondary" onclick="showShopifyInfo()">Connect Shopify</button>
       </div>
 
       <!-- SEND LOG TABLE -->
