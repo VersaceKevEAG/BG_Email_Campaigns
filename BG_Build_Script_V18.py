@@ -592,6 +592,15 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 .abtn-bug{background:#1a1a1a;border:1px solid #2a2a2a;color:#888;transition:all .12s}
 .abtn-bug:hover{border-color:#ef4444;color:#ef4444}
 
+/* ── CUSTOM TEMPLATES ── */
+.custom-section{padding:8px 0;border-top:1px solid #1e1e1e}
+.custom-hdr{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#f97316;padding:10px 16px 6px;display:flex;align-items:center;gap:6px}
+.ebtn.custom{border-left-color:#f97316}
+.ebtn.custom .enum{color:#f97316}
+.ebtn.custom.active{border-left-color:#f97316;background:#1a1408}
+.custom-del{background:none;border:none;color:#555;font-size:11px;cursor:pointer;padding:2px 5px;margin-left:auto;transition:color .12s;flex-shrink:0}
+.custom-del:hover{color:#ef4444}
+
 .health-card{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;padding:12px 10px;text-align:center}
 .hc-val{font-family:'Trebuchet MS',Arial,sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:.02em}
 .hc-label{font-size:9px;font-weight:700;font-family:'Trebuchet MS',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#777;margin:3px 0 2px}
@@ -630,6 +639,7 @@ document.addEventListener('DOMContentLoaded',function(){
       var c=document.getElementById('card-'+id);
       if(c) origHTML[id]=c.innerHTML;
     });
+    loadCustomTemplates();
     var fb=document.getElementById('btn-e01a');
     if(fb) fb.classList.add('active');
     // Load persisted analytics/insights from localStorage (non-sensitive data only)
@@ -1862,6 +1872,106 @@ function submitBugReport() {
 }
 
 /* COUPON STATUS */
+
+
+/* ============================================================
+   CUSTOM TEMPLATES (Change 6)
+   ============================================================ */
+var CUSTOM_TEMPLATES=[];
+function loadCustomTemplates(){
+  try{
+    var saved=localStorage.getItem('bg_custom_templates');
+    if(saved) CUSTOM_TEMPLATES=JSON.parse(saved);
+  }catch(e){}
+  renderCustomSidebar();
+}
+function saveCustomTemplates(){
+  try{localStorage.setItem('bg_custom_templates',JSON.stringify(CUSTOM_TEMPLATES));}catch(e){}
+}
+function renderCustomSidebar(){
+  var sec=document.getElementById('custom-templates-section');
+  if(!sec) return;
+  if(!CUSTOM_TEMPLATES.length){sec.innerHTML='';return;}
+  var html='<div class="custom-section"><div class="custom-hdr">My Templates <span style="color:#888;font-weight:600;font-size:8px;">('+CUSTOM_TEMPLATES.length+')</span></div>';
+  CUSTOM_TEMPLATES.forEach(function(t,i){
+    var sd=(t.subj||'Custom template').substring(0,46);
+    html+='<div style="display:flex;align-items:center;"><button class="ebtn custom" id="btn-custom_'+i+'" data-seg="Custom" onclick="navCustom('+i+')" style="flex:1;"><span class="enum">MY</span><span class="ename">'+esc(t.name)+'</span><span class="esubj">'+esc(sd)+'</span></button><button class="custom-del" onclick="deleteCustom('+i+')" title="Delete">&times;</button></div>';
+  });
+  html+='</div>';
+  sec.innerHTML=html;
+}
+function duplicateTemplate(){
+  var card=document.getElementById('card-'+CUR);
+  if(!card){showToast('No template selected');return;}
+  var d=DATA[CUR]||{};
+  var defaultName=(d.name||'Template')+' - Copy';
+  var name=prompt('Name for your copy:',defaultName);
+  if(!name) return;
+  var t={
+    name:name,
+    subj:d.subj||'',
+    seg:d.seg||'Custom',
+    html:card.innerHTML,
+    created:new Date().toISOString()
+  };
+  CUSTOM_TEMPLATES.push(t);
+  saveCustomTemplates();
+  renderCustomSidebar();
+  showToast('Template duplicated: '+name);
+  addLog('ok','Template duplicated: '+name);
+}
+function navCustom(idx){
+  if(idx<0||idx>=CUSTOM_TEMPLATES.length) return;
+  var t=CUSTOM_TEMPLATES[idx];
+  CUR='custom_'+idx;
+  // Deactivate all buttons
+  document.querySelectorAll('.ebtn').forEach(function(b){b.classList.remove('active');});
+  var btn=document.getElementById('btn-custom_'+idx);
+  if(btn) btn.classList.add('active');
+  // Create or reuse a panel for custom templates
+  var panel=document.getElementById('custom-panel');
+  if(!panel){
+    panel=document.createElement('div');
+    panel.id='custom-panel';
+    panel.className='epanel';
+    panel.innerHTML='<div class="ecard" id="card-custom-active"></div>';
+    var scroller=document.getElementById('scroller');
+    if(scroller) scroller.appendChild(panel);
+  }
+  // Hide all panels, show custom
+  document.querySelectorAll('.epanel').forEach(function(p){p.style.display='none';});
+  panel.style.display='block';
+  var customCard=document.getElementById('card-custom-active');
+  if(customCard) customCard.innerHTML=t.html;
+  // Update topbar
+  document.getElementById('tbSeg').textContent='Custom';
+  document.getElementById('tbNm').textContent=t.name;
+  if(VIEW==='guide') setView('preview');
+  var sc=document.getElementById('scroller');
+  if(sc) sc.scrollTop=0;
+  var sb=document.getElementById('sidebar');
+  if(sb&&sb.classList.contains('open')) toggleSB();
+}
+function deleteCustom(idx){
+  if(!confirm('Delete custom template "'+CUSTOM_TEMPLATES[idx].name+'"?')) return;
+  CUSTOM_TEMPLATES.splice(idx,1);
+  saveCustomTemplates();
+  renderCustomSidebar();
+  showToast('Custom template deleted');
+}
+function saveCustomEdits(){
+  // Save edits back to custom template (only for custom templates)
+  if(CUR&&CUR.indexOf('custom_')===0){
+    var idx=parseInt(CUR.replace('custom_',''));
+    var card=document.getElementById('card-custom-active');
+    if(card&&CUSTOM_TEMPLATES[idx]){
+      CUSTOM_TEMPLATES[idx].html=card.innerHTML;
+      saveCustomTemplates();
+      showToast('Custom template saved');
+    }
+  }
+}
+
 function checkHSCoupons() {
   var codes = ['BEAR20','FAM15','KevinFS','kevinff10'];
   var connected = (typeof HS_CONNECTED !== 'undefined' && HS_CONNECTED);
@@ -2028,7 +2138,7 @@ HTML = f"""<!DOCTYPE html>
 <div class="app">
   <div class="sb" id="sidebar">
     <div class="sb-hd"><div style="color:#fff;cursor:pointer;" onclick="goHome()">{LOGO_W}</div><div class="sb-meta">Email Campaign Command Center &nbsp;/&nbsp; {len(emails)} Templates</div></div>
-    <div class="sb-scroll">{sidebar}</div>
+    <div class="sb-scroll"><div id="custom-templates-section"></div>{sidebar}</div>
   </div>
 
   <div class="main">
@@ -2063,7 +2173,7 @@ HTML = f"""<!DOCTYPE html>
       <button class="etool" onclick="fmt('justifyLeft')">&#8676;</button>
       <button class="etool" onclick="fmt('justifyCenter')">&#8596;</button>
       <button class="etool" onclick="fmt('justifyRight')">&#8677;</button>
-      <button class="ereset" onclick="doReset()">&#8635; Reset</button>
+      <button class="ereset" style="margin-left:0;" onclick="duplicateTemplate()">&#128203; Duplicate</button><button class="ereset" onclick="doReset()">&#8635; Reset</button>
     </div>
 
     <div class="scroller" id="scroller">
