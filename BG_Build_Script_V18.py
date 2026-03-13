@@ -592,6 +592,12 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 .abtn-bug{background:#1a1a1a;border:1px solid #2a2a2a;color:#888;transition:all .12s}
 .abtn-bug:hover{border-color:#ef4444;color:#ef4444}
 
+/* ── IMPORTED TEMPLATES ── */
+.ebtn.imported .enum{color:#7dd3fc}
+.ebtn.imported{border-left-color:#7dd3fc}
+.ebtn.imported.active{border-left-color:#7dd3fc;background:#0a1420}
+.import-badge{display:inline-block;background:rgba(125,211,252,.1);border:1px solid rgba(125,211,252,.25);border-radius:2px;padding:1px 5px;font-size:7px;letter-spacing:.06em;text-transform:uppercase;color:#7dd3fc;margin-left:4px;font-weight:700}
+
 /* ── AI EDIT MODAL ── */
 .ai-modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px}
 .ai-modal-inner{background:#111;border:1px solid #222;border-radius:8px;padding:22px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto}
@@ -834,6 +840,7 @@ function renderConnect(){
     <div id="conn-log" style="margin-top:10px;"></div>
   </div>
   ${HS_CONNECTED ? renderConnectedInfo() : ''}
+  ${HS_CONNECTED ? '<div class="cmd-section"><div class="cmd-section-title">Import from HubSpot</div><p style="font-size:11px;color:#888;line-height:1.6;margin-bottom:10px;">Pull existing email templates from your HubSpot account into this tool for editing.</p><button class="cmd-btn cmd-btn-primary" onclick="importFromHS()">Import from HubSpot</button><div id="hs-import-list" style="margin-top:10px;"></div></div>' : ''}
   <div class="cmd-section">
     <div class="cmd-section-title">Security Note</div>
     <p style="font-size:11px;color:#888;line-height:1.7;">Your API key is held in memory only for this session. It is never written to disk, localStorage, or sent anywhere except directly to api.hubapi.com over HTTPS. Close this tab to clear it.</p>
@@ -1884,6 +1891,84 @@ function submitBugReport() {
 
 
 
+
+
+/* ============================================================
+   IMPORT FROM HUBSPOT (Change 9)
+   ============================================================ */
+function importFromHS(){
+  if(!HS_CONNECTED){showErr('Connect HubSpot first.');return;}
+  var list=document.getElementById('hs-import-list');
+  if(list) list.innerHTML='<div style="display:flex;align-items:center;gap:8px;color:#888;font-size:12px;padding:8px 0;"><span class="spinner"></span> Loading emails from HubSpot...</div>';
+  hsGet('/marketing/v3/emails?limit=20&orderBy=-updated',function(d,err){
+    if(err||!d){
+      if(list) list.innerHTML='<div style="font-size:12px;color:#ef4444;padding:8px 0;">Failed to fetch emails: '+(err||'unknown')+'</div>';
+      return;
+    }
+    var emails=d.results||[];
+    if(!emails.length){
+      if(list) list.innerHTML='<div style="font-size:12px;color:#888;padding:8px 0;">No emails found in your HubSpot account.</div>';
+      return;
+    }
+    var rows=emails.map(function(e,i){
+      var updated=e.updatedAt?new Date(e.updatedAt).toLocaleDateString():'--';
+      return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1a1a1a;"><div style="flex:1;"><div style="font-size:12px;color:#fff;font-weight:700;">'+esc(e.name||'Untitled')+'</div><div style="font-size:11px;color:#888;">'+esc(e.subject||'No subject')+' - Updated: '+updated+'</div></div><button class="cmd-btn cmd-btn-secondary" style="font-size:8px;padding:6px 10px;" onclick="doImportHS(\''+esc(e.id)+'\',\''+esc((e.name||'Imported').replace(/'/g,''))+'\')">Import</button></div>';
+    }).join('');
+    if(list) list.innerHTML='<div style="max-height:300px;overflow-y:auto;">'+rows+'</div>';
+    addLog('ok','Loaded '+emails.length+' emails from HubSpot');
+  });
+}
+
+function doImportHS(emailId,name){
+  if(!emailId) return;
+  var list=document.getElementById('hs-import-list');
+  if(list) list.innerHTML='<div style="display:flex;align-items:center;gap:8px;color:#888;font-size:12px;padding:8px 0;"><span class="spinner"></span> Importing...</div>';
+  hsGet('/marketing/v3/emails/'+emailId,function(d,err){
+    if(err||!d){
+      if(list) list.innerHTML='<div style="font-size:12px;color:#ef4444;padding:8px 0;">Import failed: '+(err||'unknown')+'</div>';
+      return;
+    }
+    var html=(d.content&&d.content.html)||d.htmlBody||'';
+    if(!html){
+      if(list) list.innerHTML='<div style="font-size:12px;color:#ef4444;padding:8px 0;">No HTML content found in this email.</div>';
+      return;
+    }
+    var t={
+      name:name+' (Imported)',
+      subj:d.subject||'',
+      seg:'Imported',
+      html:html,
+      created:new Date().toISOString(),
+      hsId:emailId,
+      imported:true
+    };
+    CUSTOM_TEMPLATES.push(t);
+    saveCustomTemplates();
+    renderCustomSidebar();
+    showToast('Imported: '+name);
+    addLog('ok','Imported email from HubSpot: '+name+' (ID: '+emailId+')');
+    if(list) list.innerHTML='<div style="font-size:12px;color:#22c55e;padding:8px 0;">Imported successfully. Find it in "My Templates" in the sidebar.</div>';
+  });
+}
+
+function pushBackToHS(idx){
+  if(!HS_CONNECTED){showErr('Connect HubSpot first.');return;}
+  if(idx<0||idx>=CUSTOM_TEMPLATES.length) return;
+  var t=CUSTOM_TEMPLATES[idx];
+  if(!t.hsId){showErr('This template was not imported from HubSpot.');return;}
+  var card=document.getElementById('card-custom-active');
+  var html=card?card.innerHTML:t.html;
+  hsApi('/marketing/v3/emails/'+t.hsId,'PATCH',{content:{html:html}},function(d,err){
+    if(err){
+      showErr('Push back failed: '+err);
+      addLog('err','Push back failed for '+t.name+': '+err);
+      return;
+    }
+    showToast('Pushed back to HubSpot: '+t.name);
+    addLog('ok','Pushed back to HubSpot: '+t.name+' (ID: '+t.hsId+')');
+  });
+}
+
 /* ============================================================
    AI-POWERED TEMPLATE EDITING (Change 7)
    ============================================================ */
@@ -2000,7 +2085,7 @@ function renderCustomSidebar(){
   var html='<div class="custom-section"><div class="custom-hdr">My Templates <span style="color:#888;font-weight:600;font-size:8px;">('+CUSTOM_TEMPLATES.length+')</span></div>';
   CUSTOM_TEMPLATES.forEach(function(t,i){
     var sd=(t.subj||'Custom template').substring(0,46);
-    html+='<div style="display:flex;align-items:center;"><button class="ebtn custom" id="btn-custom_'+i+'" data-seg="Custom" onclick="navCustom('+i+')" style="flex:1;"><span class="enum">MY</span><span class="ename">'+esc(t.name)+'</span><span class="esubj">'+esc(sd)+'</span></button><button class="custom-del" onclick="deleteCustom('+i+')" title="Delete">&times;</button></div>';
+    var badge=t.imported?'<span class="import-badge">Imported</span>':'';var cls=t.imported?'ebtn custom imported':'ebtn custom';html+='<div style="display:flex;align-items:center;"><button class="'+cls+'" id="btn-custom_'+i+'" data-seg="Custom" onclick="navCustom('+i+')" style="flex:1;"><span class="enum">'+(t.imported?'HS':'MY')+'</span><span class="ename">'+esc(t.name)+badge+'</span><span class="esubj">'+esc(sd)+'</span></button><button class="custom-del" onclick="deleteCustom('+i+')" title="Delete">&times;</button></div>';
   });
   html+='</div>';
   sec.innerHTML=html;
