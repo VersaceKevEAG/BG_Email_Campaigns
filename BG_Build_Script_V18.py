@@ -313,12 +313,12 @@ emails = [
   dark_sec(sal()+bd("You've been waiting. We're live.","The Bear Grinder is everything I said it would be. 608 bearing. Spins like butter. Locks with magnets. Machined from aerospace aluminum.","Three or four rotations and you're done. Then you'll spin it again just because you can."))+
   promo_d('FAM15','15% off - for you, no expiration')+btn_t('GET YOURS NOW')+signoff('Amit','Bear Grinder','beargrinder.com','Enjoy the grind.')+ftr()
 )},
-{"id":"e14a","seg":"Friends & Family","num":"14A","name":"MJBizCon - Dark","subj":"Great meeting you at MJBizCon - wanted to follow up","body":img_full('hero',280)+(
+{"id":"e14a","seg":"Special","num":"14A","name":"MJBizCon - Dark","subj":"Great meeting you at MJBizCon - wanted to follow up","body":img_full('hero',280)+(
   hdr()+teal_stripe('MJBizCon | Las Vegas')+img_overlay('hero','Good To Meet You.')+
   dark_sec(sal()+bd("Really enjoyed connecting at MJBizCon. Wanted to pick the conversation back up.","Bear Grinder - 608 bearing, three or four rotations done. Magnetic closure, no threads.","If you felt the spin at the show, you know what I mean. If not, let me get a sample in your hands."))+
   btn_w('REPLY HERE')+signoff('Amit Gorodetzer','Founder & CEO, Bear Grinder',SE,'Enjoy the grind.')+ftr(SE)
 )},
-{"id":"e15a","seg":"Friends & Family","num":"15A","name":"Special Sample F/U","subj":"Checking in on the Bear Grinder we sent home with you","body":(
+{"id":"e15a","seg":"Special","num":"15A","name":"Special Sample F/U","subj":"Checking in on the Bear Grinder we sent home with you","body":(
   hdr()+dark_sec(sal()+bd("Hope you've had a chance to spend real time with the sample.","Most people say some version of 'oh, okay' after the first spin. We love that moment.","Ready to talk product, margin, or partnership - happy to move fast."))+
   img_full('built',240)+enjoy_block()+btn_w("LET'S TALK")+signoff('Amit','Bear Grinder',SE,'Enjoy the grind - and thanks for giving it a real look.')+ftr(SE)
 )},
