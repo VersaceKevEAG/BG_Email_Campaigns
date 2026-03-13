@@ -1,6 +1,12 @@
-import base64, os, json
+import base64, os, json, hashlib
 from PIL import Image
 import io
+
+# ── ACCESS PIN ──────────────────────────────────────────────────────────────
+# Change this 6-digit PIN to control access to the tool.
+# The PIN is hashed (SHA-256) before embedding - never stored in plaintext.
+ACCESS_PIN = '082692'
+PIN_HASH = hashlib.sha256(ACCESS_PIN.encode()).hexdigest()
 
 # ── IMAGE LOADER ────────────────────────────────────────────────────────────
 # ALL images load directly from /mnt/project/ — no /tmp/ cache dependency.
@@ -370,6 +376,13 @@ for i,e in enumerate(emails):
 # ─── CSS ────────────────────────────────────────────────────────────────
 CSS="""
 
+/* ── LOCK SCREEN ── */
+.pin-dot{display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid #333;transition:all .15s}
+.pin-dot.filled{background:#3ecfcf;border-color:#3ecfcf}
+.pin-dot.error{border-color:#ef4444;background:#ef4444}
+#lockScreen.shake{animation:pinShake .4s ease}
+@keyframes pinShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#080808;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 body{overflow:hidden}
@@ -646,7 +659,52 @@ var SEND_LOG=[];
 
 window.onerror=function(msg,src,line){showErr('Line '+line+': '+msg);return false;};
 
+/* ── LOCK SCREEN ── */
+var PIN_HASH='a]PINHASH[a'; // SHA-256 of the 6-digit PIN
+var UNLOCKED=false;
+function onPinInput(el){
+  var val=el.value.replace(/\D/g,'');
+  el.value=val;
+  var dots=document.querySelectorAll('.pin-dot');
+  dots.forEach(function(d,i){d.classList.toggle('filled',i<val.length);d.classList.remove('error');});
+  document.getElementById('pinError').textContent='';
+  if(val.length===6) setTimeout(checkPin,150);
+}
+async function checkPin(){
+  var el=document.getElementById('pinInput');
+  if(!el) return;
+  var val=el.value.replace(/\D/g,'');
+  if(val.length!==6) return;
+  var hash=await sha256(val);
+  if(hash===PIN_HASH){
+    UNLOCKED=true;
+    var lock=document.getElementById('lockScreen');
+    if(lock){lock.style.transition='opacity .3s';lock.style.opacity='0';setTimeout(function(){lock.style.display='none';},300);}
+    try{sessionStorage.setItem('bg_unlocked','1');}catch(e){}
+  } else {
+    var dots=document.querySelectorAll('.pin-dot');
+    dots.forEach(function(d){d.classList.add('error');});
+    document.getElementById('pinError').textContent='Incorrect code. Try again.';
+    var lock=document.getElementById('lockScreen');
+    if(lock){lock.classList.add('shake');setTimeout(function(){lock.classList.remove('shake');},400);}
+    setTimeout(function(){el.value='';dots.forEach(function(d){d.classList.remove('filled','error');});},800);
+  }
+}
+async function sha256(msg){
+  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
+function checkSessionUnlock(){
+  try{if(sessionStorage.getItem('bg_unlocked')==='1'){
+    UNLOCKED=true;
+    var lock=document.getElementById('lockScreen');
+    if(lock) lock.style.display='none';
+  }}catch(e){}
+}
+
 document.addEventListener('DOMContentLoaded',function(){
+  checkSessionUnlock();
+  if(!UNLOCKED){var pi=document.getElementById('pinInput');if(pi)pi.focus();}
   setView('guide');
   try{
     Object.keys(DATA).forEach(function(id){
@@ -2489,6 +2547,23 @@ HTML = f"""<!DOCTYPE html>
 </head>
 <body>
 
+<!-- LOCK SCREEN -->
+<div id="lockScreen" style="position:fixed;inset:0;z-index:99999;background:#080808;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+  <div style="text-align:center;max-width:340px;padding:20px;">
+    <div style="color:#fff;margin-bottom:24px;">{LOGO_W}</div>
+    <div style="font-family:'Trebuchet MS',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#555;margin-bottom:16px;">Enter Access Code</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;" id="pinDots">
+      <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+      <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+    </div>
+    <input id="pinInput" type="tel" maxlength="6" autocomplete="off" inputmode="numeric" pattern="[0-9]*"
+      style="width:200px;background:#0d0d0d;border:1px solid #222;border-radius:6px;padding:14px;font-size:24px;color:#fff;text-align:center;letter-spacing:.4em;font-family:'Trebuchet MS',Arial,sans-serif;outline:none;-webkit-appearance:none;"
+      placeholder="------" oninput="onPinInput(this)" onkeydown="if(event.key==='Enter')checkPin()"/>
+    <div id="pinError" style="font-size:11px;color:#ef4444;margin-top:10px;min-height:16px;"></div>
+    <div style="font-size:10px;color:#333;margin-top:20px;">Bear Grinder LLC - Authorized Access Only</div>
+  </div>
+</div>
+
 <div id="sbOverlay" class="tb-overlay" onclick="toggleSB()"></div>
 
 <div class="app">
@@ -2678,6 +2753,8 @@ HTML = f"""<!DOCTYPE html>
 </html>"""
 
 out=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'index.html')
+# Inject PIN hash into JS (raw string can't use f-string)
+HTML = HTML.replace('a]PINHASH[a', PIN_HASH)
 with open(out,'w',encoding='utf-8') as f:
     f.write(HTML)
 
