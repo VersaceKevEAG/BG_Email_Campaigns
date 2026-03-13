@@ -326,14 +326,25 @@ emails = [
 print(f"Emails: {len(emails)}")
 EMAIL_DATA = json.dumps({e["id"]:{"seg":e["seg"],"num":e["num"],"name":e["name"],"subj":e["subj"]} for e in emails})
 
+# Build collapsible sidebar with category groups
 sidebar=""
+seg_counts={}
+for e in emails:
+    seg_counts[e["seg"]]=seg_counts.get(e["seg"],0)+1
+
 cur_seg=""
 for e in emails:
     if e["seg"]!=cur_seg:
+        if cur_seg:
+            sidebar+='</div>\n'  # close previous seg-group
         cur_seg=e["seg"]
-        sidebar+=f'<div class="seg-label" data-seg="{e["seg"]}">{e["seg"]}</div>\n'
+        count=seg_counts[cur_seg]
+        sidebar+=f'<div class="seg-label" data-seg="{e["seg"]}" onclick="toggleSeg(this)"><span class="seg-chev">&#9654;</span> {e["seg"]} <span class="seg-count">({count})</span></div>\n'
+        sidebar+=f'<div class="seg-group" data-seg="{e["seg"]}" style="display:none;">\n'
     sd=e["subj"][:46]+("..." if len(e["subj"])>46 else "")
     sidebar+=f'<button class="ebtn" id="btn-{e["id"]}" data-seg="{e["seg"]}" onclick="nav(\'{e["id"]}\')">\n<span class="enum">{e["num"]}</span><span class="ename">{e["name"]}</span>\n<span class="esubj">{sd}</span></button>\n'
+if cur_seg:
+    sidebar+='</div>\n'  # close last seg-group
 
 panels=""
 for i,e in enumerate(emails):
@@ -361,8 +372,15 @@ body{overflow:hidden}
 .sb-meta{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-top:4px}
 .sb-scroll{overflow-y:auto;flex:1;padding-bottom:32px;-webkit-overflow-scrolling:touch}
 .sb-scroll::-webkit-scrollbar{width:2px}.sb-scroll::-webkit-scrollbar-thumb{background:#222}
-.seg-label{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#555;padding:16px 16px 6px;border-top:1px solid #141414}
-.seg-label:first-child{border-top:none;padding-top:10px}
+.seg-label{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#555;padding:12px 16px;border-top:1px solid #141414;cursor:pointer;display:flex;align-items:center;gap:6px;transition:color .12s;user-select:none;-webkit-user-select:none}
+.seg-label:first-child{border-top:none}
+.seg-label:hover{color:#3ecfcf}
+.seg-label.expanded{color:#aaa}
+.seg-label.expanded .seg-chev{transform:rotate(90deg)}
+.seg-chev{font-size:7px;transition:transform .2s ease;display:inline-block;color:#555;flex-shrink:0}
+.seg-count{color:#444;font-weight:600;margin-left:auto;font-size:8px;letter-spacing:.06em}
+.seg-group{overflow:hidden;transition:max-height .25s ease;max-height:0}
+.seg-group.open{max-height:800px;display:block!important}
 .ebtn{display:block;width:100%;background:none;border:none;border-left:3px solid transparent;padding:10px 14px 11px;cursor:pointer;text-align:left;transition:background .12s;-webkit-tap-highlight-color:rgba(62,207,207,.1)}
 .ebtn:hover,.ebtn:active{background:#141414}
 .ebtn.active{background:#141414;border-left-color:#3ecfcf}
@@ -618,12 +636,49 @@ function toggleSB(){
   if(sb) sb.classList.toggle('open');
   if(ov) ov.classList.toggle('on',sb&&sb.classList.contains('open'));
 }
+/* ── COLLAPSIBLE SIDEBAR CATEGORIES ── */
+function toggleSeg(labelEl){
+  var seg=labelEl.getAttribute('data-seg');
+  var group=labelEl.nextElementSibling;
+  if(!group||!group.classList.contains('seg-group')) return;
+  var isOpen=group.classList.contains('open');
+  if(isOpen){
+    group.classList.remove('open');
+    group.style.display='none';
+    labelEl.classList.remove('expanded');
+  } else {
+    group.classList.add('open');
+    group.style.display='block';
+    labelEl.classList.add('expanded');
+  }
+}
+function expandSegFor(id){
+  var btn=document.getElementById('btn-'+id);
+  if(!btn) return;
+  var seg=btn.getAttribute('data-seg');
+  var grp=btn.closest('.seg-group');
+  if(grp&&!grp.classList.contains('open')){
+    grp.classList.add('open');
+    grp.style.display='block';
+    var lbl=grp.previousElementSibling;
+    if(lbl&&lbl.classList.contains('seg-label')) lbl.classList.add('expanded');
+  }
+}
+function expandAllSegs(){
+  document.querySelectorAll('.seg-group').forEach(function(g){g.classList.add('open');g.style.display='block';});
+  document.querySelectorAll('.seg-label').forEach(function(l){l.classList.add('expanded');});
+}
+function collapseAllSegs(){
+  document.querySelectorAll('.seg-group').forEach(function(g){g.classList.remove('open');g.style.display='none';});
+  document.querySelectorAll('.seg-label').forEach(function(l){l.classList.remove('expanded');});
+}
 function nav(id){
   try{
     CUR=id;
     document.querySelectorAll('.ebtn').forEach(function(b){b.classList.remove('active');});
     var btn=document.getElementById('btn-'+id);
     if(btn) btn.classList.add('active');
+    expandSegFor(id);
     var hint=document.getElementById('see-more-hint');
     if(hint) hint.style.display=(window.innerWidth<=700)?'flex':'none';
     var d=DATA[id];
@@ -1361,8 +1416,9 @@ function goHome() {
   var ov = document.querySelector('.tb-overlay');
   if (sb) sb.classList.remove('open');
   if (ov) ov.classList.remove('on');
-  // Reset audience filter
-  document.querySelectorAll('.seg-label,.ebtn').forEach(function(el){ el.style.display = ''; });
+  // Reset audience filter and collapse all categories
+  document.querySelectorAll('.seg-label,.seg-group').forEach(function(el){ el.style.display = ''; });
+  collapseAllSegs();
   document.querySelectorAll('.aud-btn').forEach(function(b){ b.classList.remove('active'); });
   // Hide see-more hint
   var hint = document.getElementById('see-more-hint');
@@ -1528,11 +1584,30 @@ function filterAudience(seg) {
     var ab = document.querySelector('.aud-btn[data-seg="' + seg + '"]');
     if (ab) ab.classList.add('active');
   }
-  // Show/hide sidebar items
-  document.querySelectorAll('.seg-label,.ebtn').forEach(function(el) {
-    var s = el.getAttribute('data-seg');
-    el.style.display = (seg === 'ALL' || s === seg) ? '' : 'none';
-  });
+  // Show/hide sidebar category groups
+  if (seg === 'ALL') {
+    // Show all categories and expand them
+    document.querySelectorAll('.seg-label,.seg-group').forEach(function(el){ el.style.display = ''; });
+    expandAllSegs();
+  } else {
+    // Show only matching category, hide others
+    document.querySelectorAll('.seg-label').forEach(function(el){
+      var s = el.getAttribute('data-seg');
+      el.style.display = (s === seg) ? '' : 'none';
+    });
+    document.querySelectorAll('.seg-group').forEach(function(el){
+      var s = el.getAttribute('data-seg');
+      if (s === seg) {
+        el.style.display = 'block';
+        el.classList.add('open');
+        var lbl = el.previousElementSibling;
+        if (lbl) lbl.classList.add('expanded');
+      } else {
+        el.style.display = 'none';
+        el.classList.remove('open');
+      }
+    });
+  }
   // Always open sidebar on mobile
   if (window.innerWidth <= 700) {
     var sb = document.getElementById('sidebar');
@@ -1541,7 +1616,6 @@ function filterAudience(seg) {
     if (ov) ov.classList.add('on');
   }
   if (seg === 'ALL') {
-    // Just open sidebar, stay on current view
     showToast('Showing all 21 templates');
   } else {
     // Pick first template in segment and switch to preview
