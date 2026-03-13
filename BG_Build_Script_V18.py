@@ -964,7 +964,23 @@ function renderCampaign(){
       <div id="onepager-note" style="display:none;margin-top:12px;padding:10px 12px;background:#0a0a0a;border:1px solid #1a3a2a;border-radius:4px;border-left:3px solid #22c55e;">
         <div style="font-family:'Trebuchet MS',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#22c55e;margin-bottom:4px;">1-Pager Will Be Included</div>
         <p style="font-size:11px;color:#444;line-height:1.6;margin:0 0 6px;">A download link for the Bear Grinder 1-pager will be added to the email footer. After pushing to HubSpot, also manually attach <strong style="color:#666;">Bear_Grinder_1Pager.pdf</strong> in the HubSpot email editor before sending.</p>
-        <p style="font-size:11px;color:#333;line-height:1.5;margin:0;font-style:italic;">File should be in your HubSpot Files library under: Marketing / Bear Grinder / 1-Pager</p>
+        <p style="font-size:11px;color:#888;line-height:1.5;margin:0;font-style:italic;">File should be in your HubSpot Files library under: Marketing / Bear Grinder / 1-Pager</p>
+      </div>
+    </div>
+    <div style="background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;padding:14px 16px;margin-bottom:8px;">
+      <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;">
+        <input type="checkbox" id="attach-custom" style="width:16px;height:16px;margin-top:2px;accent-color:#3ecfcf;flex-shrink:0;" onchange="toggleCustomAttach(this.checked)"/>
+        <div>
+          <div style="font-family:'Trebuchet MS',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-bottom:3px;">Attach Custom File</div>
+          <div style="font-size:11px;color:#888;line-height:1.6;">Upload your file to HubSpot Files first, then paste the URL here.</div>
+        </div>
+      </label>
+      <div id="custom-attach-section" style="display:none;margin-top:12px;">
+        <div class="cmd-field" style="margin-bottom:8px;">
+          <label class="cmd-label">HubSpot File URL</label>
+          <input class="cmd-input" id="custom-attach-url" placeholder="https://app.hubspot.com/file-manager/..." style="width:100%;"/>
+        </div>
+        <div style="margin-top:4px;font-size:11px;color:#888;line-height:1.5;">HubSpot does not support programmatic attachments. Upload your file to HubSpot Files, then attach manually in the HubSpot editor before sending.</div>
       </div>
     </div>
   </div>
@@ -1688,8 +1704,12 @@ function toggleVH(btn) {
 function toggle1Pager(checked) {
   var note = document.getElementById('onepager-note');
   if (note) note.style.display = checked ? 'block' : 'none';
-  // Auto-check for wholesale/distributor segments
   if (checked) showToast('1-Pager attachment enabled - remember to attach PDF in HubSpot');
+}
+function toggleCustomAttach(checked) {
+  var sec = document.getElementById('custom-attach-section');
+  if (sec) sec.style.display = checked ? 'block' : 'none';
+  if (checked) showToast('Custom attachment enabled - paste HubSpot File URL');
 }
 
 // Auto-suggest 1-pager for wholesale/dist templates
