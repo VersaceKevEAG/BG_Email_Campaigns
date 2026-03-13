@@ -99,22 +99,22 @@ def bd(*ps,light=False):
     c='#333' if light else 'rgba(255,255,255,.75)'
     return ''.join(f'<p contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:{c};margin:0 0 13px;padding:0;">{p}</p>' for p in ps)
 def sal(light=False):
-    c='#aaa' if light else 'rgba(255,255,255,.35)'
+    c='#aaa' if light else 'rgba(255,255,255,.55)'
     return f'<p contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:{c};margin:0 0 18px;padding:0;">Hi [firstname],</p>'
 def div_line(light=False):
     return f'<div style="height:1px;background:{"#e8e8e8" if light else "#111"};"></div>'
 def btn_w(lbl,note=''):
-    n=f'<div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.06em;margin-top:8px;">{note}</div>' if note else ''
+    n=f'<div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.06em;margin-top:8px;">{note}</div>' if note else ''
     return f'<div style="background:#000;padding:26px 32px;text-align:center;"><a href="#" contenteditable="true" style="display:inline-block;background:#fff;color:#000;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:14px 40px;text-decoration:none;">{lbl}</a>{n}</div>'
 def btn_b(lbl,note=''):
     n=f'<div contenteditable="true" style="font-size:11px;color:#bbb;letter-spacing:.06em;margin-top:8px;">{note}</div>' if note else ''
     return f'<div style="background:#fff;padding:26px 32px;text-align:center;"><a href="#" contenteditable="true" style="display:inline-block;background:#000;color:#fff;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:14px 40px;text-decoration:none;">{lbl}</a>{n}</div>'
 def btn_t(lbl,note=''):
-    n=f'<div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.06em;margin-top:8px;">{note}</div>' if note else ''
+    n=f'<div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.06em;margin-top:8px;">{note}</div>' if note else ''
     return f'<div style="background:#000;padding:26px 32px;text-align:center;"><a href="#" contenteditable="true" style="display:inline-block;background:{TEAL};color:#000;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:14px 40px;text-decoration:none;">{lbl}</a>{n}</div>'
 def promo_d(code,sub,note=''):
-    n=f'<div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-top:6px;">{note}</div>' if note else ''
-    return f'<div style="background:#000;padding:32px;text-align:center;border-top:1px solid #111;border-bottom:1px solid #111;"><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px;">PROMO CODE</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:48px;font-weight:900;letter-spacing:.1em;color:{TEAL};line-height:1;">{code}</div><div contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.45);letter-spacing:.08em;margin-top:8px;">{sub}</div>{n}</div>'
+    n=f'<div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.06em;margin-top:6px;">{note}</div>' if note else ''
+    return f'<div style="background:#000;padding:32px;text-align:center;border-top:1px solid #111;border-bottom:1px solid #111;"><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:10px;">PROMO CODE</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:48px;font-weight:900;letter-spacing:.1em;color:{TEAL};line-height:1;">{code}</div><div contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.6);letter-spacing:.08em;margin-top:8px;">{sub}</div>{n}</div>'
 def promo_l(code,sub,note=''):
     n=f'<div contenteditable="true" style="font-size:11px;color:#bbb;letter-spacing:.06em;margin-top:6px;">{note}</div>' if note else ''
     return f'<div style="background:#f7f7f7;padding:32px;text-align:center;border-top:1px solid #e8e8e8;border-bottom:1px solid #e8e8e8;"><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#bbb;margin-bottom:10px;">PROMO CODE</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:48px;font-weight:900;letter-spacing:.1em;color:#000;line-height:1;">{code}</div><div contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:13px;color:#888;letter-spacing:.08em;margin-top:8px;">{sub}</div>{n}</div>'
@@ -132,7 +132,7 @@ def feat_row(ik,lbl,body,rev=False,light=False):
     bg='#f7f7f7' if light else '#000'
     lc='#000' if light else '#fff'
     pc='#444' if light else 'rgba(255,255,255,.6)'
-    ec='#bbb' if light else 'rgba(255,255,255,.3)'
+    ec='#bbb' if light else 'rgba(255,255,255,.5)'
     bdc='#e8e8e8' if light else '#111'
     imgT=f'<td style="width:50%;padding:0;vertical-align:middle;background:#000;overflow:hidden;"><img src="{src}" style="width:100%;height:200px;object-fit:cover;display:block;"></td>'
     txtT=f'<td style="width:50%;padding:24px;vertical-align:middle;background:{bg};border-{"left" if not rev else "right"}:1px solid {bdc};"><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:{ec};margin-bottom:7px;">FEATURE</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:{lc};line-height:1.2;margin-bottom:10px;">{lbl}</div><p contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.75;color:{pc};margin:0;padding:0;">{body}</p></td>'
@@ -154,7 +154,7 @@ def quote_blk(t,light=False):
     bdc='#e8e8e8' if light else '#111'
     return f'<div style="background:{bg};padding:44px 40px;text-align:center;border-top:1px solid {bdc};border-bottom:1px solid {bdc};"><div contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:22px;font-weight:300;font-style:italic;color:{tc};line-height:1.55;">&ldquo;{t}&rdquo;</div></div>'
 def urgency(lbl,cnt):
-    return f'<div style="background:#000;padding:26px 32px;text-align:center;border-top:3px solid #fff;border-bottom:3px solid #fff;"><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:7px;">{lbl}</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:56px;font-weight:900;letter-spacing:.03em;color:#fff;line-height:1;">{cnt}</div></div>'
+    return f'<div style="background:#000;padding:26px 32px;text-align:center;border-top:3px solid #fff;border-bottom:3px solid #fff;"><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:7px;">{lbl}</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:56px;font-weight:900;letter-spacing:.03em;color:#fff;line-height:1;">{cnt}</div></div>'
 def terms_blk(items,light=False):
     bg='#0d0d0d' if not light else '#f7f7f7'
     tc='rgba(255,255,255,.5)' if not light else '#666'
@@ -166,8 +166,8 @@ def signoff(n,t,u,note='',light=False):
     bg='#fff' if light else '#000'
     bdc='#e8e8e8' if light else '#111'
     nc='#000' if light else '#fff'
-    tc='#777' if light else 'rgba(255,255,255,.4)'
-    uc='#bbb' if light else 'rgba(255,255,255,.25)'
+    tc='#777' if light else 'rgba(255,255,255,.55)'
+    uc='#bbb' if light else 'rgba(255,255,255,.5)'
     nh=f'<p contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:14px;font-style:italic;line-height:1.75;color:{"#555" if light else "rgba(255,255,255,.5)"};margin:0 0 18px;padding:0;">{note}</p>' if note else ''
     return f'<div style="background:{bg};padding:30px 32px;border-top:1px solid {bdc};">{nh}<div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:14px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:{nc};">{n}</div><div contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:12px;color:{tc};margin-top:3px;">{t}</div><div contenteditable="true" style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:12px;color:{uc};margin-top:2px;">{u}</div></div>'
 
@@ -186,27 +186,27 @@ ENJOY_STRIP = make_enjoy_strip()
 def ftr(contact='beargrinder.com',light=False):
     bg='#fff' if light else '#000'
     bdc='#e8e8e8' if light else '#111'
-    tc2='#bbb' if light else '#2a2a2a'
-    cc='#999' if light else '#333'
+    tc2='#bbb' if light else '#666'
+    cc='#999' if light else '#666'
     cbg='#f5f5f5' if light else '#0a0a0a'
     logo=LOGO_B if light else LOGO_W
     logo=logo.replace('width="160"','width="110"').replace('height="30"','height="22"').replace('font-size="17"','font-size="12"')
     return (
         f'<div style="background:{bg};padding:18px 32px 10px;border-top:1px solid {bdc};"><table style="width:100%;border-collapse:collapse;"><tr><td style="vertical-align:middle;">{logo}</td><td style="text-align:right;vertical-align:middle;"><a href="https://beargrinder.com" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:{tc2};text-decoration:none;">BEARGRINDER.COM</a></td></tr></table></div>'
-        f'<div style="background:#000;border-top:1px solid #0a0a0a;"><img src="{ENJOY_STRIP}" style="display:block;width:100%;max-width:600px;height:auto;opacity:.55;" alt="Enjoy the Grind"/><div style="background:#000;padding:2px 24px 8px;text-align:center;"><span style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#1a1a1a;">ENJOY THE GRIND.</span></div></div>'
+        f'<div style="background:#000;border-top:1px solid #0a0a0a;"><img src="{ENJOY_STRIP}" style="display:block;width:100%;max-width:600px;height:auto;opacity:.55;" alt="Enjoy the Grind"/><div style="background:#000;padding:2px 24px 8px;text-align:center;"><span style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#444;">ENJOY THE GRIND.</span></div></div>'
         f'<div style="background:{cbg};padding:10px 24px 14px;border-top:1px solid {bdc};"><p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:10px;color:{cc};line-height:1.7;margin:0 0 5px;text-align:center;">You received this email because you opted in at beargrinder.com or expressed interest in Bear Grinder products.</p><p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:10px;color:{cc};line-height:1.7;margin:0 0 5px;text-align:center;"><a href="{{{{unsubscribe}}}}" style="color:{cc};text-decoration:underline;">Unsubscribe</a> &nbsp;|&nbsp; <a href="https://beargrinder.com/pages/privacy-policy" style="color:{cc};text-decoration:underline;">Privacy Policy</a> &nbsp;|&nbsp; <a href="https://beargrinder.com" style="color:{cc};text-decoration:underline;">beargrinder.com</a></p><p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:9px;color:{tc2};margin:0;text-align:center;">Bear Grinder LLC &nbsp;|&nbsp; San Diego, CA &nbsp;|&nbsp; Hello@BearGrinder.com</p></div>'
     )
 
 def stripe(t,light=False):
     bg='#f7f7f7' if light else '#111'
-    tc='#888' if light else 'rgba(255,255,255,.4)'
+    tc='#888' if light else 'rgba(255,255,255,.55)'
     return f'<div contenteditable="true" style="background:{bg};padding:9px 32px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:{tc};text-align:center;">{t}</div>'
 def teal_stripe(t):
     return f'<div contenteditable="true" style="background:{TEAL};padding:10px 32px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#000;text-align:center;">{t}</div>'
 def enjoy_block(light=False):
     bg='#000' if not light else '#fff'
-    mc=f'rgba(255,255,255,.42)' if not light else 'rgba(0,0,0,.38)'
-    sc=f'rgba(255,255,255,.25)' if not light else 'rgba(0,0,0,.2)'
+    mc=f'rgba(255,255,255,.55)' if not light else 'rgba(0,0,0,.38)'
+    sc=f'rgba(255,255,255,.5)' if not light else 'rgba(0,0,0,.2)'
     return f'<div style="background:{bg};padding:32px;text-align:center;"><div style="line-height:.95;letter-spacing:.02em;"><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:44px;font-weight:900;text-transform:uppercase;color:{mc};">ENJOY</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:44px;font-weight:900;text-transform:uppercase;color:{sc};">THE</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:44px;font-weight:900;text-transform:uppercase;color:{TEAL};">GRIND</div></div></div>'
 
 # ─── EMAILS ──────────────────────────────────────────
@@ -358,7 +358,7 @@ body{overflow:hidden}
   .sb.open{transform:translateX(0)}
 }
 .sb-hd{padding:16px 16px 12px;border-bottom:1px solid #181818;flex-shrink:0}
-.sb-meta{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#2a2a2a;margin-top:4px}
+.sb-meta{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-top:4px}
 .sb-scroll{overflow-y:auto;flex:1;padding-bottom:32px;-webkit-overflow-scrolling:touch}
 .sb-scroll::-webkit-scrollbar{width:2px}.sb-scroll::-webkit-scrollbar-thumb{background:#222}
 .seg-label{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#555;padding:16px 16px 6px;border-top:1px solid #141414}
@@ -384,8 +384,8 @@ body{overflow:hidden}
 .mob-btn{display:none;background:none;border:1px solid #2a2a2a;border-radius:7px;padding:9px 13px;color:#fff;font-size:20px;cursor:pointer;flex-shrink:0;line-height:1;min-width:44px;min-height:44px;align-items:center;justify-content:center}
 @media(max-width:700px){.mob-btn{display:flex}}
 .tb-seg{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Trebuchet MS',Arial,sans-serif;white-space:nowrap}
-.tb-div{color:#252525;font-size:10px}
-.tb-nm{font-size:9px;color:#2e2e2e;font-family:'Trebuchet MS',Arial,sans-serif;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.tb-div{color:#555;font-size:10px}
+.tb-nm{font-size:9px;color:#666;font-family:'Trebuchet MS',Arial,sans-serif;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 @media(max-width:700px){.tb-div,.tb-nm{display:none}}
 .tb-r{margin-left:auto;display:flex;align-items:center;gap:5px;flex-shrink:0}
 @media(max-width:700px){.tb-r{gap:4px}}
@@ -393,7 +393,7 @@ body{overflow:hidden}
 /* ── NAV TABS - desktop strip, mobile bottom drawer ── */
 .vtabs{display:flex;border:1px solid #1e1e1e;border-radius:4px;overflow:hidden}
 @media(max-width:700px){.vtabs{display:none}}
-.vtab{background:none;border:none;border-right:1px solid #1e1e1e;padding:6px 10px;font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#3a3a3a;cursor:pointer;font-family:'Trebuchet MS',Arial,sans-serif;white-space:nowrap;transition:all .12s}
+.vtab{background:none;border:none;border-right:1px solid #1e1e1e;padding:6px 10px;font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#666;cursor:pointer;font-family:'Trebuchet MS',Arial,sans-serif;white-space:nowrap;transition:all .12s}
 .vtab:last-child{border-right:none}
 .vtab:hover:not(.on){background:#141414;color:#fff}
 .vtab.on{background:#fff;color:#000}
@@ -409,7 +409,7 @@ body{overflow:hidden}
 .mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px 7px;background:none;border:none;cursor:pointer;border-left:1px solid #181818;-webkit-tap-highlight-color:rgba(62,207,207,.1)}
 .mob-nav-btn:first-child{border-left:none}
 .mob-nav-icon{font-size:15px;line-height:1}
-.mob-nav-lbl{font-family:'Trebuchet MS',Arial,sans-serif;font-size:7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3a3a3a;line-height:1}
+.mob-nav-lbl{font-family:'Trebuchet MS',Arial,sans-serif;font-size:7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#666;line-height:1}
 .mob-nav-btn.on .mob-nav-lbl{color:#3ecfcf}
 .mob-nav-btn.on.c-edit .mob-nav-lbl{color:#2563eb}
 .mob-nav-btn.on.c-campaign .mob-nav-lbl{color:#f97316}
@@ -420,7 +420,7 @@ body{overflow:hidden}
 /* ── ACTION BUTTONS ── */
 .abtn{display:flex;align-items:center;gap:4px;border:none;border-radius:4px;padding:6px 11px;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;font-family:'Trebuchet MS',Arial,sans-serif;white-space:nowrap;min-height:32px}
 @media(max-width:700px){.abtn{display:none}}
-.abtn-copy{background:none;border:1px solid #222;color:#3a3a3a;transition:all .12s}
+.abtn-copy{background:none;border:1px solid #222;color:#666;transition:all .12s}
 .abtn-copy:hover{border-color:#3a3a3a;color:#fff}
 .abtn-copy.ok{background:#16a34a;border-color:#16a34a;color:#fff}
 .abtn-hs{background:#3ecfcf;color:#000}
@@ -456,7 +456,7 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 @media(max-width:700px){.cmd-hd{padding:12px 14px;gap:8px}}
 .cmd-badge{font-family:'Trebuchet MS',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px}
 .cmd-title{font-family:'Trebuchet MS',Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#fff}
-.cmd-sub{font-size:11px;color:#333;margin-left:auto}
+.cmd-sub{font-size:11px;color:#777;margin-left:auto}
 .cmd-body{padding:16px 18px 80px;max-width:700px}
 @media(max-width:700px){.cmd-body{padding:12px 12px 80px}}
 .cmd-section{background:#141414;border:1px solid #1e1e1e;border-radius:6px;padding:14px 16px;margin-bottom:12px}
@@ -468,7 +468,7 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 .cmd-label{font-family:'Trebuchet MS',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#555}
 .cmd-input{background:#0d0d0d;border:1px solid #222;border-radius:4px;padding:9px 12px;font-size:14px;color:#fff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;outline:none;transition:border-color .12s;-webkit-appearance:none;width:100%}
 .cmd-input:focus{border-color:#3ecfcf}
-.cmd-input::placeholder{color:#2a2a2a}
+.cmd-input::placeholder{color:#555}
 .cmd-select{background:#0d0d0d;border:1px solid #222;border-radius:4px;padding:9px 12px;font-size:13px;color:#fff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;outline:none;cursor:pointer;-webkit-appearance:none;width:100%}
 .cmd-select option{background:#141414;color:#fff}
 .cmd-btn{padding:10px 18px;border:none;border-radius:4px;font-family:'Trebuchet MS',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .12s;white-space:nowrap;min-height:38px;-webkit-tap-highlight-color:rgba(62,207,207,.15)}
@@ -490,7 +490,7 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 .pill-info{background:rgba(62,207,207,.12);color:#3ecfcf;border:1px solid rgba(62,207,207,.25)}
 .pill-purple{background:rgba(168,85,247,.12);color:#a855f7;border:1px solid rgba(168,85,247,.25)}
 .data-table{width:100%;border-collapse:collapse;font-size:12px}
-.data-table th{font-family:'Trebuchet MS',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#333;text-align:left;padding:6px 8px;border-bottom:1px solid #1e1e1e}
+.data-table th{font-family:'Trebuchet MS',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#777;text-align:left;padding:6px 8px;border-bottom:1px solid #1e1e1e}
 .data-table td{color:#777;padding:9px 8px;border-bottom:1px solid #141414;vertical-align:top;line-height:1.5}
 .data-table td:first-child{color:#bbb}
 .data-table tr:hover td{background:#141414}
@@ -499,7 +499,7 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 @media(max-width:700px){.metric-grid{grid-template-columns:repeat(2,1fr);gap:7px}}
 .metric-card{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:5px;padding:14px 14px}
 .metric-val{font-family:'Trebuchet MS',Arial,sans-serif;font-size:24px;font-weight:900;color:#fff;line-height:1}
-.metric-lbl{font-family:'Trebuchet MS',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#333;margin-top:5px}
+.metric-lbl{font-family:'Trebuchet MS',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#777;margin-top:5px}
 .metric-card.teal .metric-val{color:#3ecfcf}
 .metric-card.purple .metric-val{color:#a855f7}
 .metric-card.green .metric-val{color:#22c55e}
@@ -507,7 +507,7 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 .metric-card.orange .metric-val{color:#f97316}
 .score-ring{display:flex;align-items:center;gap:16px;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:5px;padding:16px 18px;margin-bottom:12px}
 .score-num{font-family:'Trebuchet MS',Arial,sans-serif;font-size:56px;font-weight:900;line-height:1;color:#3ecfcf}
-.score-of{font-family:'Trebuchet MS',Arial,sans-serif;font-size:13px;color:#333;margin-top:2px}
+.score-of{font-family:'Trebuchet MS',Arial,sans-serif;font-size:13px;color:#777;margin-top:2px}
 .score-info h3{font-family:'Trebuchet MS',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;margin-bottom:5px}
 .score-info p{font-size:13px;color:#555;line-height:1.65}
 .insight-item{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:5px;padding:13px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
@@ -524,7 +524,7 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 .list-chip:hover,.list-chip:active{border-color:#3ecfcf;color:#3ecfcf}
 .list-chip.selected{background:rgba(62,207,207,.1);border-color:#3ecfcf;color:#3ecfcf}
 .log-entry{font-family:monospace;font-size:11px;color:#555;padding:4px 0;border-bottom:1px solid #141414;line-height:1.5}
-.log-entry .ts{color:#252525;margin-right:8px}
+.log-entry .ts{color:#555;margin-right:8px}
 .log-entry .ok{color:#22c55e}
 .log-entry .err{color:#ef4444}
 .log-entry .info{color:#3ecfcf}
@@ -559,11 +559,11 @@ body.editing [contenteditable="true"]:focus{background:rgba(37,99,235,.12);borde
 
 .health-card{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;padding:12px 10px;text-align:center}
 .hc-val{font-family:'Trebuchet MS',Arial,sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:.02em}
-.hc-label{font-size:9px;font-weight:700;font-family:'Trebuchet MS',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#444;margin:3px 0 2px}
-.hc-bench{font-size:9px;color:#2a2a2a;margin-bottom:4px}
+.hc-label{font-size:9px;font-weight:700;font-family:'Trebuchet MS',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#777;margin:3px 0 2px}
+.hc-bench{font-size:9px;color:#666;margin-bottom:4px}
 .hc-status{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .seg-card{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;padding:12px 14px}
-.seg-card-label{font-size:9px;font-weight:700;font-family:'Trebuchet MS',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#444;margin-bottom:5px}
+.seg-card-label{font-size:9px;font-weight:700;font-family:'Trebuchet MS',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#777;margin-bottom:5px}
 .seg-card-val{font-size:18px;font-weight:900;font-family:'Trebuchet MS',Arial,sans-serif;color:#3ecfcf}
 
 """
@@ -736,7 +736,7 @@ function renderConnect(){
   ${HS_CONNECTED ? renderConnectedInfo() : ''}
   <div class="cmd-section">
     <div class="cmd-section-title">Security Note</div>
-    <p style="font-size:11px;color:#444;line-height:1.7;">Your API key is held in memory only for this session. It is never written to disk, localStorage, or sent anywhere except directly to api.hubapi.com over HTTPS. Close this tab to clear it.</p>
+    <p style="font-size:11px;color:#888;line-height:1.7;">Your API key is held in memory only for this session. It is never written to disk, localStorage, or sent anywhere except directly to api.hubapi.com over HTTPS. Close this tab to clear it.</p>
   </div>
 </div>`;
 }
@@ -849,7 +849,7 @@ function renderCampaign(){
     <div class="cmd-section-title">3. Select Contact List</div>
     <select class="cmd-select" id="camp-list" style="width:100%;margin-bottom:8px;">${listOpts}</select>
     <button class="cmd-btn cmd-btn-secondary" onclick="fetchLists()" style="font-size:8px;">Refresh Lists</button>
-    <p style="font-size:11px;color:#333;margin-top:6px;line-height:1.5;">Or upload a CSV list directly to HubSpot:</p>
+    <p style="font-size:11px;color:#888;margin-top:6px;line-height:1.5;">Or upload a CSV list directly to HubSpot:</p>
     <div class="cmd-row" style="margin-top:6px;">
       <div class="cmd-field">
         <label class="cmd-label">CSV File (email column required)</label>
@@ -867,7 +867,7 @@ function renderCampaign(){
         <input class="cmd-input" type="datetime-local" id="camp-schedule">
       </div>
     </div>
-    <p style="font-size:11px;color:#333;margin-top:4px;">Best send times based on industry data: Tuesday-Thursday, 10am-2pm local. Avoid Mondays and Fridays.</p>
+    <p style="font-size:11px;color:#888;margin-top:4px;">Best send times based on industry data: Tuesday-Thursday, 10am-2pm local. Avoid Mondays and Fridays.</p>
   </div>
   <div class="cmd-section">
     <div class="cmd-section-title">4b. Attachments</div>
@@ -895,7 +895,7 @@ function renderCampaign(){
       <button class="cmd-btn cmd-btn-primary" onclick="pushToHS('draft')">Save as HubSpot Draft</button>
       <button class="cmd-btn cmd-btn-orange" onclick="pushToHS('send')">Push &amp; Schedule Send</button>
     </div>
-    <p style="font-size:10px;color:#2a2a2a;margin-top:7px;">Draft saves to HubSpot Marketing &rarr; Email for review before sending.</p>
+    <p style="font-size:10px;color:#666;margin-top:7px;">Draft saves to HubSpot Marketing &rarr; Email for review before sending.</p>
   </div>
   <div class="cmd-section">
     <div class="cmd-section-title">Activity Log</div>
@@ -1170,9 +1170,9 @@ function renderAnalytics(){
   ` : ''}
   <div class="cmd-section">
     <div class="cmd-section-title">Sync Live Stats from HubSpot</div>
-    <p style="font-size:11px;color:#444;line-height:1.6;margin-bottom:8px;">Pull real-time open rates, clicks, and unsubscribes for all campaigns pushed from this tool.</p>
+    <p style="font-size:11px;color:#888;line-height:1.6;margin-bottom:8px;">Pull real-time open rates, clicks, and unsubscribes for all campaigns pushed from this tool.</p>
     <button class="cmd-btn cmd-btn-primary" onclick="syncStats()" ${!HS_CONNECTED?'disabled':''}>Sync Stats from HubSpot</button>
-    ${!HS_CONNECTED?'<span style="font-size:11px;color:#333;margin-left:8px;">Connect HubSpot first</span>':''}
+    ${!HS_CONNECTED?'<span style="font-size:11px;color:#888;margin-left:8px;">Connect HubSpot first</span>':''}
   </div>
   <div id="sync-log"></div>
 </div>`;
@@ -1745,14 +1745,14 @@ GUIDE_HTML = f'''<div class="cmd-panel" id="view-guide" style="display:block;bac
 
   <div style="background:#000;border:1px solid #1e1e1e;border-radius:6px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;">
     <div style="color:#fff;">{LOGO_SM}</div>
-    <div><p style="font-size:11px;color:#444;line-height:1.7;">{len(emails)} templates &nbsp;/&nbsp; 5 segments &nbsp;/&nbsp; A+B versions &nbsp;/&nbsp; HubSpot live API &nbsp;/&nbsp; AI insights &nbsp;/&nbsp; Email Compliance Check &nbsp;/&nbsp; V18</p></div>
+    <div><p style="font-size:11px;color:#888;line-height:1.7;">{len(emails)} templates &nbsp;/&nbsp; 5 segments &nbsp;/&nbsp; A+B versions &nbsp;/&nbsp; HubSpot live API &nbsp;/&nbsp; AI insights &nbsp;/&nbsp; Email Compliance Check &nbsp;/&nbsp; V18</p></div>
   </div>
 
   <div style="margin-bottom:12px;">
     <div style="background:linear-gradient(135deg,#0d0d0d 0%,#111 100%);border:1px solid #1e1e1e;border-radius:8px;padding:20px 18px;margin-bottom:10px;">
       <div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#3ecfcf;margin-bottom:8px;">Start Here</div>
       <div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:18px;font-weight:900;letter-spacing:.02em;color:#fff;margin-bottom:4px;text-transform:uppercase;">Pick Your Audience</div>
-      <p style="font-size:12px;color:#555;margin-bottom:16px;line-height:1.6;">Choose who you are sending to. Templates load filtered and ready.</p>
+      <p style="font-size:12px;color:#999;margin-bottom:16px;line-height:1.6;">Choose who you are sending to. Templates load filtered and ready.</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
         <button onclick="filterAudience(\'B2C\')" class="aud-btn" data-seg="B2C"><span class="aud-icon">&#128717;</span><span class="aud-label">B2C</span><span class="aud-sub">Consumer emails</span></button>
         <button onclick="filterAudience(\'Wholesale\')" class="aud-btn" data-seg="Wholesale"><span class="aud-icon">&#127978;</span><span class="aud-label">Wholesale</span><span class="aud-sub">Retail buyers</span></button>
@@ -1762,7 +1762,7 @@ GUIDE_HTML = f'''<div class="cmd-panel" id="view-guide" style="display:block;bac
       </div>
     </div>
     <button onclick="filterAudience(\'ALL\')" style="width:100%;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;padding:14px 18px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;" onmouseover="this.style.color=\'#fff\';this.style.borderColor=\'#3a3a3a\'" onmouseout="this.style.color=\'#555\';this.style.borderColor=\'#1e1e1e\'">
-      <span style="font-size:16px;">&#128247;</span> See All Templates
+      <span style="font-size:16px;">&#128221;</span> See All Templates
     </button>
   </div>
 
@@ -1772,23 +1772,23 @@ GUIDE_HTML = f'''<div class="cmd-panel" id="view-guide" style="display:block;bac
     <div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#3ecfcf;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #1e1e1e;">Campaign Tools - Live HubSpot Actions</div>
     <table class="data-table" style="margin-bottom:14px;">
       <tr><th>Tab</th><th>What It Does</th><th>Quick Tip</th></tr>
-      <tr><td><span style="color:#f97316;font-weight:700;">Send</span></td><td>Build and push campaigns to HubSpot. Pick template, select list, run compliance, schedule or send.</td><td style="color:#444;">Always run Email Compliance Check before pushing.</td></tr>
-      <tr><td><span style="color:#a855f7;font-weight:700;">Stats</span></td><td>Track open rates, CTR, unsubscribes, and bounces per template. Syncs live from HubSpot.</td><td style="color:#444;">Hit Sync after sends to pull real numbers.</td></tr>
-      <tr><td><span style="color:#22c55e;font-weight:700;">Connect</span></td><td>Enter your HubSpot Private App token. Tests connection and loads your contact lists.</td><td style="color:#444;">Do this first. Nothing sends without a connection.</td></tr>
+      <tr><td><span style="color:#f97316;font-weight:700;">Send</span></td><td>Build and push campaigns to HubSpot. Pick template, select list, run compliance, schedule or send.</td><td style="color:#777;">Always run Email Compliance Check before pushing.</td></tr>
+      <tr><td><span style="color:#a855f7;font-weight:700;">Stats</span></td><td>Track open rates, CTR, unsubscribes, and bounces per template. Syncs live from HubSpot.</td><td style="color:#777;">Hit Sync after sends to pull real numbers.</td></tr>
+      <tr><td><span style="color:#22c55e;font-weight:700;">Connect</span></td><td>Enter your HubSpot Private App token. Tests connection and loads your contact lists.</td><td style="color:#777;">Do this first. Nothing sends without a connection.</td></tr>
     </table>
     <div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#3ecfcf;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #1e1e1e;">Template Tools - Edit and Export Individual Emails</div>
     <table class="data-table">
       <tr><th>Tab</th><th>What It Does</th><th>Quick Tip</th></tr>
-      <tr><td><span style="color:#fff;font-weight:700;">Preview</span></td><td>Read-only view of any template. Click a template in the sidebar to load it.</td><td style="color:#444;">Review before editing so you have the right one selected.</td></tr>
-      <tr><td><span style="color:#2563eb;font-weight:700;">Edit</span></td><td>Click any text in the email to edit inline. Toolbar for bold, italic, alignment. Reset restores original.</td><td style="color:#444;">Edits reset on reload. Copy to HubSpot first to save.</td></tr>
-      <tr><td><span style="color:#3ecfcf;font-weight:700;">Export</span></td><td>Copies HubSpot-ready HTML to your clipboard. Paste into HubSpot source editor.</td><td style="color:#444;">If clipboard is blocked, copy manually from the text box.</td></tr>
-      <tr><td><span style="color:#3ecfcf;font-weight:700;">HS View</span></td><td>Shows how the email renders inside HubSpot: table layout, tokens visible.</td><td style="color:#444;">Check this before every send to catch layout issues.</td></tr>
+      <tr><td><span style="color:#fff;font-weight:700;">Preview</span></td><td>Read-only view of any template. Click a template in the sidebar to load it.</td><td style="color:#777;">Review before editing so you have the right one selected.</td></tr>
+      <tr><td><span style="color:#2563eb;font-weight:700;">Edit</span></td><td>Click any text in the email to edit inline. Toolbar for bold, italic, alignment. Reset restores original.</td><td style="color:#777;">Edits reset on reload. Copy to HubSpot first to save.</td></tr>
+      <tr><td><span style="color:#3ecfcf;font-weight:700;">Export</span></td><td>Copies HubSpot-ready HTML to your clipboard. Paste into HubSpot source editor.</td><td style="color:#777;">If clipboard is blocked, copy manually from the text box.</td></tr>
+      <tr><td><span style="color:#3ecfcf;font-weight:700;">HS View</span></td><td>Shows how the email renders inside HubSpot: table layout, tokens visible.</td><td style="color:#777;">Check this before every send to catch layout issues.</td></tr>
     </table>
   </div>
 
   <div class="cmd-section">
     <div class="cmd-section-title">Quick Start</div>
-    <p style="font-size:11px;color:#555;line-height:1.6;margin-bottom:10px;">Follow in order. Skipping Connect means nothing sends.</p>
+    <p style="font-size:11px;color:#999;line-height:1.6;margin-bottom:10px;">Follow in order. Skipping Connect means nothing sends.</p>
     <div style="font-size:13px;color:#555;line-height:2.2;">
       <div style="display:flex;gap:10px;align-items:baseline;margin-bottom:6px;"><span style="color:#22c55e;font-weight:700;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;letter-spacing:.08em;flex-shrink:0;min-width:52px;">STEP 1</span><span><strong style="color:#22c55e;">Connect</strong> - Enter your HubSpot Private App token, tap Test Connection. Lists load automatically.</span></div>
       <div style="display:flex;gap:10px;align-items:baseline;margin-bottom:6px;"><span style="color:#3ecfcf;font-weight:700;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:10px;letter-spacing:.08em;flex-shrink:0;min-width:52px;">STEP 2</span><span>Pick a template from the sidebar. Tap <strong style="color:#fff;">Preview</strong> to review, <strong style="color:#2563eb;">Edit</strong> to customize.</span></div>
@@ -1799,7 +1799,7 @@ GUIDE_HTML = f'''<div class="cmd-panel" id="view-guide" style="display:block;bac
 
   <div class="cmd-section">
     <div class="cmd-section-title">Promo Codes</div>
-    <p style="font-size:11px;color:#555;line-height:1.6;margin-bottom:12px;">Confirm all codes are active in Shopify before any send. Kevin codes are for personal outreach only.</p>
+    <p style="font-size:11px;color:#999;line-height:1.6;margin-bottom:12px;">Confirm all codes are active in Shopify before any send. Kevin codes are for personal outreach only.</p>
     <div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#555;margin-bottom:8px;">Global Codes</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
       <div style="background:#0d0d0d;border:1px solid #1e1e1e;border-radius:5px;padding:12px 14px;"><div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#333;margin-bottom:4px;">B2C Launch</div><div style="font-family:monospace;font-size:20px;font-weight:700;color:#3ecfcf;">BEAR20</div><div style="font-size:11px;color:#555;margin-top:3px;">20% off - 2-week window</div><div id="hs-status-BEAR20" style="margin-top:7px;font-size:10px;color:#333;">Confirm active in Shopify</div></div>
@@ -1811,7 +1811,7 @@ GUIDE_HTML = f'''<div class="cmd-panel" id="view-guide" style="display:block;bac
       <div style="background:#0d0d0d;border:1px solid #1e1e1e;border-radius:5px;padding:12px 14px;"><div style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#333;margin-bottom:4px;">10% Off Order</div><div style="font-family:monospace;font-size:15px;font-weight:700;color:#3ecfcf;">kevinf&amp;f10</div><div style="font-size:11px;color:#555;margin-top:3px;">10% off entire order</div><div id="hs-status-kevinff10" style="margin-top:7px;font-size:10px;color:#333;">Personal outreach only</div></div>
     </div>
     <div style="padding:8px 12px;background:#080808;border:1px solid #1a1a1a;border-radius:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <span style="font-size:11px;color:#333;flex:1;">Connect HubSpot to check live code status.</span>
+      <span style="font-size:11px;color:#888;flex:1;">Connect HubSpot to check live code status.</span>
       <button onclick="checkHSCoupons()" style="padding:5px 12px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:3px;font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;cursor:pointer;">Check Status</button>
     </div>
   </div>
@@ -1842,7 +1842,7 @@ AI_PANEL = '''<div class="cmd-section" id="ai-section">
   </div>
   <div id="ai-score-display"></div>
   <button class="cmd-btn cmd-btn-purple" onclick="runAIAnalysis()" style="margin-bottom:10px;">Run AI Analysis</button>
-  <p style="font-size:11px;color:#333;margin-bottom:10px;line-height:1.5;">Analyzes all templates + send data. Returns a 1-100 quality score and specific actionable improvements. Updates after every send.</p>
+  <p style="font-size:11px;color:#888;margin-bottom:10px;line-height:1.5;">Analyzes all templates + send data. Returns a 1-100 quality score and specific actionable improvements. Updates after every send.</p>
   <div id="ai-insights-container"></div>
 </div>'''
 
@@ -1883,7 +1883,7 @@ HTML = f"""<!DOCTYPE html>
 
 <div class="app">
   <div class="sb" id="sidebar">
-    <div class="sb-hd"><div style="color:#fff;">{LOGO_W}</div><div class="sb-meta">Email Campaign Command Center &nbsp;/&nbsp; {len(emails)} Templates</div></div>
+    <div class="sb-hd"><div style="color:#fff;cursor:pointer;" onclick="goHome()">{LOGO_W}</div><div class="sb-meta">Email Campaign Command Center &nbsp;/&nbsp; {len(emails)} Templates</div></div>
     <div class="sb-scroll">{sidebar}</div>
   </div>
 
@@ -1934,7 +1934,7 @@ HTML = f"""<!DOCTYPE html>
       <!-- BUSINESS HEALTH SUMMARY -->
       <div class="cmd-section">
         <div class="cmd-section-title">Business Health Summary</div>
-        <p style="font-size:11px;color:#555;margin-bottom:14px;line-height:1.6;">Email performance benchmarked against e-commerce industry averages. Connect HubSpot for live data. Stored send history shows below.</p>
+        <p style="font-size:11px;color:#999;margin-bottom:14px;line-height:1.6;">Email performance benchmarked against e-commerce industry averages. Connect HubSpot for live data. Stored send history shows below.</p>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;" id="health-grid">
           <div class="health-card" id="hc-opens"><div class="hc-val" id="hv-opens">--</div><div class="hc-label">Open Rate</div><div class="hc-bench">Industry avg: 21%</div><div class="hc-status" id="hs-opens"></div></div>
           <div class="health-card" id="hc-ctr"><div class="hc-val" id="hv-ctr">--</div><div class="hc-label">Click Rate</div><div class="hc-bench">Industry avg: 2.6%</div><div class="hc-status" id="hs-ctr"></div></div>
@@ -1953,7 +1953,7 @@ HTML = f"""<!DOCTYPE html>
       <!-- SEND LOG TABLE -->
       <div class="cmd-section">
         <div class="cmd-section-title">Send Log</div>
-        <p style="font-size:11px;color:#555;margin-bottom:10px;line-height:1.6;">All campaign sends recorded in this tool. Each row is one send event.</p>
+        <p style="font-size:11px;color:#999;margin-bottom:10px;line-height:1.6;">All campaign sends recorded in this tool. Each row is one send event.</p>
         <div style="overflow-x:auto;">
           <table class="data-table" id="send-log-table">
             <tr>
@@ -1986,7 +1986,7 @@ HTML = f"""<!DOCTYPE html>
       <!-- ECOMM BENCHMARKS -->
       <div class="cmd-section">
         <div class="cmd-section-title">E-Commerce Benchmarks</div>
-        <p style="font-size:11px;color:#555;margin-bottom:10px;line-height:1.6;">Cannabis/lifestyle e-commerce targets. Use these to evaluate campaign performance.</p>
+        <p style="font-size:11px;color:#999;margin-bottom:10px;line-height:1.6;">Cannabis/lifestyle e-commerce targets. Use these to evaluate campaign performance.</p>
         <table class="data-table">
           <tr><th>Metric</th><th>Your Rate</th><th>Industry Avg</th><th>Top Performers</th><th>Status</th></tr>
           <tr><td>Open Rate</td><td id="bench-opens">--</td><td style="color:#888;">21%</td><td style="color:#22c55e;">35%+</td><td id="bench-opens-st" style="color:#333;">--</td></tr>
