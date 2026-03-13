@@ -1370,7 +1370,18 @@ function renderHSP(id){
   var d=DATA[id]||{};
   if(lbl) lbl.textContent=(d.num||'')+' - '+(d.name||'');
   var card=document.getElementById('card-'+id);
-  if(inner&&card) inner.innerHTML=card.innerHTML;
+  if(!inner||!card) return;
+  // Simulate HubSpot email rendering:
+  // 1. Max 600px width (enforced by container)
+  // 2. Strip contenteditable attributes
+  // 3. Show unsubscribe token as visible link
+  // 4. Leave [firstname] merge fields as-is
+  var html=card.innerHTML;
+  html=html.replace(/\s*contenteditable="true"/g,'');
+  html=html.replace(/\{\{unsubscribe\}\}/g,'#unsubscribe');
+  html=html.replace(/\{\{\{unsubscribe\}\}\}/g,'#unsubscribe');
+  // Replace unsubscribe placeholder with visible link text if not already
+  inner.innerHTML=html;
 }
 
 function buildHS(subj,body){
@@ -1393,8 +1404,12 @@ function copyHSFor(id){
 }
 function doCopy(){
   try{
-    var card=document.getElementById('card-'+CUR);var d=DATA[CUR]||{};var html=buildHS(d.subj||'',card?card.innerHTML:'');
-    copyText(html,function(){var btn=document.getElementById('copyBtn');if(btn){btn.classList.add('ok');btn.textContent='\u2713 Copied!';setTimeout(function(){btn.classList.remove('ok');btn.textContent='Copy for HubSpot';},2400);}showToast('HubSpot HTML copied.');},function(){showErr('Copy blocked - open Export tab and copy HTML manually.');});
+    var card=document.getElementById('card-'+CUR);var d=DATA[CUR]||{};
+    var rawHtml=card?card.innerHTML:'';
+    // Strip contenteditable and edit-mode styling for clean export
+    rawHtml=rawHtml.replace(/\s*contenteditable="true"/g,'');
+    var html=buildHS(d.subj||'',rawHtml);
+    copyText(html,function(){var btn=document.getElementById('copyBtn');if(btn){btn.classList.add('ok');btn.textContent='\u2713 Copied!';setTimeout(function(){btn.classList.remove('ok');btn.textContent='Copy HTML';},2400);}showToast('HTML copied to clipboard');},function(){showErr('Copy blocked - open Export tab and copy HTML manually.');});
   }catch(e){showErr('doCopy: '+e.message);}
 }
 function goHS(){try{window.open('https://app.hubspot.com/email','_blank');}catch(e){}}
@@ -1971,15 +1986,15 @@ HTML = f"""<!DOCTYPE html>
         <div class="vtabs">
           <button class="vtab on" id="t-guide"    onclick="setView('guide')">Guide</button>
           <button class="vtab"    id="t-preview"  onclick="setView('preview')">Preview</button>
+          <button class="vtab t-hsp"  id="t-hsp"  onclick="setView('hsp')">HS Preview</button>
           <button class="vtab t-edit" id="t-edit" onclick="setView('edit')">Edit</button>
           <button class="vtab t-hs"   id="t-hs"   onclick="setView('hs')">Export</button>
-          <button class="vtab t-hsp"  id="t-hsp"  onclick="setView('hsp')">HS View</button>
           <button class="vtab t-analytics" id="t-analytics" onclick="setView('analytics')">Analytics</button>
           <button class="vtab" id="t-dashboard" onclick="setView('dashboard')">Dashboard</button>
           <button class="vtab t-campaign"  id="t-campaign"  onclick="setView('campaign')">Campaign</button>
           <button class="vtab t-connect"   id="t-connect"   onclick="setView('connect')">Connect</button>
         </div>
-        <button class="abtn abtn-copy" id="copyBtn" onclick="doCopy()">Copy for HubSpot</button>
+        <button class="abtn abtn-copy" id="copyBtn" onclick="doCopy()" title="Copy this template's HTML to clipboard. Paste into HubSpot's HTML editor or any email platform.">Copy HTML</button>
         <button class="abtn abtn-hs"   onclick="goHS()">HubSpot &#8599;</button>
       </div>
     </div>
