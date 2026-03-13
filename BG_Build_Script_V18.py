@@ -674,6 +674,8 @@ function collapseAllSegs(){
 }
 function nav(id){
   try{
+    // Revert previous template to original (session-only edits)
+    if(CUR&&origHTML[CUR]){var prevCard=document.getElementById('card-'+CUR);if(prevCard)prevCard.innerHTML=origHTML[CUR];}
     CUR=id;
     document.querySelectorAll('.ebtn').forEach(function(b){b.classList.remove('active');});
     var btn=document.getElementById('btn-'+id);
@@ -745,6 +747,14 @@ function setView(v){
     }
     var eb=document.getElementById('ebar');
     if(eb) eb.classList.toggle('on',v==='edit');
+    // Revert to original when leaving edit mode for master templates
+    if(VIEW==='edit'&&v!=='edit'&&CUR&&origHTML[CUR]){
+      var editCard=document.getElementById('card-'+CUR);
+      if(editCard){
+        var isCustom=CUR.indexOf('custom_')===0;
+        if(!isCustom) editCard.innerHTML=origHTML[CUR];
+      }
+    }
     document.body.classList.toggle('editing',v==='edit');
   }catch(e){showErr('setView: '+e.message);}
 }
@@ -2000,7 +2010,7 @@ HTML = f"""<!DOCTYPE html>
     </div>
 
     <div class="ebar" id="ebar">
-      <span class="eb-lbl">Edit Mode</span>
+      <span class="eb-lbl">Edit Mode</span><span style="font-size:9px;color:#555;font-family:'Trebuchet MS',Arial,sans-serif;letter-spacing:.04em;margin-right:6px;">Session edit - changes revert when you leave</span>
       <button class="etool" onclick="fmt('bold')"><b>B</b></button>
       <button class="etool" onclick="fmt('italic')"><i>I</i></button>
       <button class="etool" onclick="fmt('underline')"><u>U</u></button>
