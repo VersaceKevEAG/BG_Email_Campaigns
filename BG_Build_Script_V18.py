@@ -313,18 +313,18 @@ def hs_panel(email_id, subject, body_html, cta_text, cta_url='[CTA_URL]'):
 # ─── EMAILS ──────────────────────────────────────────
 emails = [
 {"id":"e01a","seg":"B2C","num":"01A","name":"Main Template - D2C","subj":"The V3 Is Here | 20% Off for the Next 2 Weeks","body":(
-  hdr()+img_overlay('hero','The V3 Is Here.','Built different. Spins different. Ships April.')+
-  dark_sec(sal()+bd("The wait is over. The Bear Grinder V3 is officially here, and it is built different.","We took everything people loved about Bear Grinder and fixed the parts they did not. The result is the smoothest, most satisfying grinder we have ever made."))+
-  feat_row('grind_b','Ball Bearing Spin System','Effortless, butter-smooth grinding. Three to four rotations and you are done.')+
-  feat_row('lid','Anti-Jam Design','Eliminates buildup and sticking. No resistance. No frustration. Just works.',rev=True)+
-  feat_row('tooth','Precision Machined Aluminum','Large capacity chamber. Magnetic closure that snaps shut clean every time. Built to last.')+
+  hdr()+img_overlay('hero','The New Bear Grinder Is Here.','Built different. Spins different. Ships April.')+
+  dark_sec(sal()+bd("The wait is over. The new Bear Grinder is officially here, and it is built different.","We took everything people loved about the original Bear Grinder, and made some additional improvements for our V3 model. The result is the smoothest, most satisfying grinder we have ever made."))+
+  feat_row('grind_b','Ball Bearing Spin System','Effortless, butter-smooth grind. Three to four rotations and you\'re done.')+
+  feat_row('lid','Anti-Jam Design','Eliminates buildup and sticking. No resistance. No frustration. It just works.',rev=True)+
+  feat_row('tooth','Precision Aerospace Grade Aluminum','Large capacity chamber. Magnetic closure that snaps shut clean every time. Built to last.')+
   promo_d('BEAR20','20% off at checkout','Early bird window — two weeks only. Pre-orders ship early April.')+
   btn_t('Pre-Order the V3 Now — Use Code BEAR20')+signoff('Amit','Founder | Bear Grinder','beargrinder.com',"Thanks for being a Bear Grinder fan. This one is worth it.")+ftr()+
-  hs_panel('e01a','The V3 Is Here | 20% Off for the Next 2 Weeks','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The wait is over. The Bear Grinder V3 is officially here, and it is built different.&lt;/p&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;We took everything people loved about Bear Grinder and fixed the parts they did not. The result is the smoothest, most satisfying grinder we have ever made.&lt;/p&gt;
+  hs_panel('e01a','The V3 Is Here | 20% Off for the Next 2 Weeks','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The wait is over. The new Bear Grinder is officially here, and it is built different.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;We took everything people loved about the original Bear Grinder, and made some additional improvements for our V3 model. The result is the smoothest, most satisfying grinder we have ever made.&lt;/p&gt;
             &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#fff;"&gt;What is new in the V3:&lt;/strong&gt;&lt;/p&gt;
             &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
-              &lt;li&gt;Ball bearing spin system for effortless, butter-smooth grinding&lt;/li&gt;
+              &lt;li&gt;Ball bearing spin system for effortless, butter-smooth grind&lt;/li&gt;
               &lt;li&gt;Anti-jam design that eliminates buildup and sticking&lt;/li&gt;
               &lt;li&gt;Large capacity chamber for bigger sessions&lt;/li&gt;
               &lt;li&gt;Magnetic closure that snaps shut clean every time&lt;/li&gt;
