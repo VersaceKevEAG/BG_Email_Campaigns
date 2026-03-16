@@ -341,11 +341,11 @@ emails = [
 )},
 {"id":"e02a","seg":"B2C","num":"02A","name":"D2C - Main - Email 2","subj":"People Are Loving the V3 | 20% Off Still Available","body":(
   hdr()+quote_blk("[TESTIMONIAL 1]")+
-  dark_sec(sal()+bd("The V3 launched and the early response has been exactly what we expected."))+
+  dark_sec(sal()+bd("The new Bear Grinder launched and the early response has been exactly what we expected."))+
   quote_blk("[TESTIMONIAL 2]")+
-  dark_sec(bd("If you have been on the fence, now is the time.","The early bird offer is still live — 20% off with code BEAR20 — but the two-week window is closing. Pre-orders ship early April."))+
+  dark_sec(bd("If you've been on the fence, now is the time.","The early bird offer is still live — 20% off with code BEAR20 — but the two-week window is closing. Pre-orders ship early April."))+
   promo_d('BEAR20','20% off. Window closing.')+btn_w('Pre-Order the V3 — Use Code BEAR20')+signoff('Amit','Founder | Bear Grinder','beargrinder.com')+ftr()+
-  hs_panel('e02a','People Are Loving the V3 | 20% Off Still Available','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The V3 launched and the early response has been exactly what we expected.&lt;/p&gt;
+  hs_panel('e02a','People Are Loving the V3 | 20% Off Still Available','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The new Bear Grinder launched and the early response has been exactly what we expected.&lt;/p&gt;
             &lt;!-- TESTIMONIAL BLOCK --&gt;
             &lt;div style="border-left:3px solid #3ecfcf;padding:12px 16px;margin:0 0 13px;background:rgba(62,207,207,.05);"&gt;
               &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-style:italic;line-height:1.82;color:rgba(255,255,255,.75);margin:0;"&gt;[TESTIMONIAL 1]&lt;/p&gt;
@@ -353,7 +353,7 @@ emails = [
             &lt;div style="border-left:3px solid #3ecfcf;padding:12px 16px;margin:0 0 13px;background:rgba(62,207,207,.05);"&gt;
               &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-style:italic;line-height:1.82;color:rgba(255,255,255,.75);margin:0;"&gt;[TESTIMONIAL 2]&lt;/p&gt;
             &lt;/div&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;If you have been on the fence, now is the time.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;If you've been on the fence, now is the time.&lt;/p&gt;
             &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The early bird offer is still live — 20% off with code &lt;strong style="color:#3ecfcf;"&gt;BEAR20&lt;/strong&gt; — but the two-week window is closing. Pre-orders ship early April.&lt;/p&gt;''','Pre-Order the V3 — Use Code BEAR20','https://beargrinder.com/collections/all')
 )},
 {"id":"e02b","seg":"B2C","num":"02B","name":"Social Proof - Light","subj":"People can't stop spinning it","body":(
