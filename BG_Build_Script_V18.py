@@ -7,6 +7,7 @@ import io
 # The PIN is hashed (SHA-256) before embedding - never stored in plaintext.
 ACCESS_PIN = '082692'
 PIN_HASH = hashlib.sha256(ACCESS_PIN.encode()).hexdigest()
+PIN_HASH2 = '3ec2cf533516e0be1ae76ae78aa820c1ce21b4ba8c01757aae7625308de23a0b'  # SHA-256 of secondary PIN 313420
 
 # ── IMAGE LOADER ────────────────────────────────────────────────────────────
 # ALL images load directly from /mnt/project/ — no /tmp/ cache dependency.
@@ -232,36 +233,142 @@ def enjoy_block(light=False):
     sc=f'rgba(255,255,255,.5)' if not light else 'rgba(0,0,0,.2)'
     return f'<div style="background:{bg};padding:32px;text-align:center;"><div style="line-height:.95;letter-spacing:.02em;"><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:44px;font-weight:900;text-transform:uppercase;color:{mc};">ENJOY</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:44px;font-weight:900;text-transform:uppercase;color:{sc};">THE</div><div contenteditable="true" style="font-family:\'Trebuchet MS\',Arial,sans-serif;font-size:44px;font-weight:900;text-transform:uppercase;color:{TEAL};">GRIND</div></div></div>'
 
+# ─── HUBSPOT PANEL HELPER ─────────────────────────────
+def hs_panel(email_id, subject, body_html, cta_text, cta_url='[CTA_URL]'):
+    """Generate a collapsible HubSpot HTML export panel for a template card."""
+    # Build clean table-based HubSpot HTML
+    hs_code = f'''&lt;!-- HubSpot Email HTML — Copy and paste into HubSpot HTML editor --&gt;
+&lt;table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f4f4;"&gt;
+  &lt;tr&gt;
+    &lt;td align="center" style="padding:20px 0;"&gt;
+      &lt;table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#000; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;"&gt;
+        &lt;!-- HEADER --&gt;
+        &lt;tr&gt;
+          &lt;td style="padding:22px 32px; border-bottom:1px solid #111;"&gt;
+            &lt;span style="font-family:'Trebuchet MS',Arial,sans-serif;font-size:17px;font-weight:900;letter-spacing:3px;color:#fff;text-transform:uppercase;"&gt;BEAR GRINDER&lt;/span&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;!-- BODY --&gt;
+        &lt;tr&gt;
+          &lt;td style="padding:32px;"&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55);margin:0 0 18px;"&gt;Hi {{{{ contact.firstname }}}},&lt;/p&gt;
+{body_html}
+            &lt;!-- CTA BUTTON --&gt;
+            &lt;table cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;"&gt;
+              &lt;tr&gt;
+                &lt;td style="background:#3ecfcf;border-radius:4px;"&gt;
+                  &lt;a href="{cta_url}" style="display:block;padding:14px 28px;font-family:'Trebuchet MS',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#000;text-decoration:none;"&gt;{cta_text}&lt;/a&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;!-- SIGNATURE --&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0;"&gt;Amit&lt;br&gt;Bear Grinder&lt;/p&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;!-- FOOTER --&gt;
+        &lt;tr&gt;
+          &lt;td style="padding:16px 32px;border-top:1px solid #111;"&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;color:rgba(255,255,255,.3);margin:0;text-align:center;"&gt;Bear Grinder | &lt;a href="https://beargrinder.com" style="color:#3ecfcf;text-decoration:none;"&gt;beargrinder.com&lt;/a&gt; | &lt;a href="{{{{unsubscribe_link}}}}" style="color:rgba(255,255,255,.3);text-decoration:none;"&gt;Unsubscribe&lt;/a&gt;&lt;/p&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;'''
+
+    panel_id = f'hs-panel-{email_id}'
+    return f'''<div style="background:#0a0a0a;border-top:2px solid #3ecfcf;margin-top:0;">
+  <div style="background:#0d1a1a;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;" onclick="(function(){{var p=document.getElementById('{panel_id}');var ch=document.getElementById('{panel_id}-chev');if(p.style.display==='none'){{p.style.display='block';ch.textContent='&#9660;'}}else{{p.style.display='none';ch.textContent='&#9654;'}}}})()" >
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="background:#3ecfcf;color:#000;font-family:'Trebuchet MS',Arial,sans-serif;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border-radius:2px;">HubSpot</span>
+      <span style="font-family:'Trebuchet MS',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3ecfcf;">Export HTML + Instructions</span>
+    </div>
+    <span id="{panel_id}-chev" style="color:#3ecfcf;font-size:10px;">&#9654;</span>
+  </div>
+  <div id="{panel_id}" style="display:none;padding:20px 20px 24px;">
+    <div style="background:#0d0d0d;border:1px solid #1e1e1e;border-radius:5px;padding:14px 16px;margin-bottom:14px;">
+      <div style="font-family:'Trebuchet MS',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#3ecfcf;margin-bottom:10px;">To use this template in HubSpot:</div>
+      <div style="font-size:12px;color:#888;line-height:2.1;">
+        <div style="display:flex;gap:10px;margin-bottom:2px;"><span style="color:#3ecfcf;font-weight:700;min-width:18px;">1.</span><span>Go to <strong style="color:#bbb;">Marketing &gt; Email &gt; Create Email</strong></span></div>
+        <div style="display:flex;gap:10px;margin-bottom:2px;"><span style="color:#3ecfcf;font-weight:700;min-width:18px;">2.</span><span>Choose <strong style="color:#bbb;">Custom HTML</strong> template type</span></div>
+        <div style="display:flex;gap:10px;margin-bottom:2px;"><span style="color:#3ecfcf;font-weight:700;min-width:18px;">3.</span><span>Click the HTML editor icon <strong style="color:#bbb;">(&lt; &gt;)</strong> to switch to code view</span></div>
+        <div style="display:flex;gap:10px;margin-bottom:2px;"><span style="color:#3ecfcf;font-weight:700;min-width:18px;">4.</span><span>Paste the HTML code below, replacing everything in the editor</span></div>
+        <div style="display:flex;gap:10px;margin-bottom:2px;"><span style="color:#3ecfcf;font-weight:700;min-width:18px;">5.</span><span><strong style="color:#bbb;">&#123;&#123; contact.firstname &#125;&#125;</strong> is already formatted as a HubSpot personalization token</span></div>
+        <div style="display:flex;gap:10px;margin-bottom:2px;"><span style="color:#3ecfcf;font-weight:700;min-width:18px;">6.</span><span>Update <strong style="color:#bbb;">[CTA_URL]</strong> with your actual link and replace any <strong style="color:#bbb;">[PLACEHOLDER]</strong> items</span></div>
+        <div style="display:flex;gap:10px;"><span style="color:#3ecfcf;font-weight:700;min-width:18px;">7.</span><span>Click <strong style="color:#bbb;">Send Test</strong> to preview in your inbox before sending</span></div>
+      </div>
+    </div>
+    <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <div style="font-family:'Trebuchet MS',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#555;">Subject: </div>
+      <div style="font-size:12px;color:#bbb;">{subject}</div>
+    </div>
+    <div style="background:#080808;border:1px solid #1e1e1e;border-radius:4px;padding:12px 14px;font-family:monospace;font-size:10px;color:#7dd3fc;white-space:pre-wrap;word-break:break-all;max-height:280px;overflow-y:auto;margin-bottom:10px;line-height:1.6;" id="{panel_id}-code">{hs_code}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button onclick="(function(){{var c=document.getElementById('{panel_id}-code');var raw=c.textContent||c.innerText;raw=raw.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');if(navigator.clipboard){{navigator.clipboard.writeText(raw).then(function(){{showToast('HubSpot HTML copied to clipboard');}}).catch(function(){{fallbackCopy(raw,function(){{showToast('Copied');}},function(){{}});}});}}else{{fallbackCopy(raw,function(){{showToast('Copied');}},function(){{}});}}}})()" style="background:#3ecfcf;color:#000;border:none;border-radius:4px;padding:9px 18px;font-family:'Trebuchet MS',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">Copy HTML</button>
+      <button onclick="window.open('https://app.hubspot.com/email','_blank')" style="background:#1e1e1e;border:1px solid #2a2a2a;color:#888;border-radius:4px;padding:9px 18px;font-family:'Trebuchet MS',Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">Open HubSpot &#8599;</button>
+    </div>
+  </div>
+</div>'''
+
 # ─── EMAILS ──────────────────────────────────────────
 emails = [
-{"id":"e01a","seg":"B2C","num":"01A","name":"Launch - Dark","subj":"We just dropped something you're going to want to pick up","body":(
-  hdr()+img_overlay('hero','Built Different.','The V3 Bear Grinder. Now shipping.')+
-  dark_sec(sal()+bd("We built Bear Grinder because we were tired of grinders that fight back.","Sticky threads. Metal in your herb. The slow decline where something that used to work great now barely does.","We fixed all of it."))+
-  feat_row('lid','Magnetic Closure','Neodymium magnets. No threads. No jamming. No cross-threading - ever.')+
-  feat_row('grind_b','608 Ball Bearing','Three to four rotations, done. Gets easier every time - not harder.',rev=True)+
-  feat_row('tooth','Precision Tooth Design','High-low pattern. Fluffy, airy, even grind. Preserves trichomes, terpenes, and flower structure.')+
-  promo_d('BEAR20','20% off at checkout','Early bird window - two weeks only. Ships April.')+
-  btn_w('SHOP NOW')+signoff('Amit','Founder, Bear Grinder','beargrinder.com',"Come try it. You'll feel it in the first spin.")+ftr()
+{"id":"e01a","seg":"B2C","num":"01A","name":"Main Template - D2C","subj":"The V3 Is Here | 20% Off for the Next 2 Weeks","body":(
+  hdr()+img_overlay('hero','The V3 Is Here.','Built different. Spins different. Ships April.')+
+  dark_sec(sal()+bd("The wait is over. The Bear Grinder V3 is officially here, and it is built different.","We took everything people loved about Bear Grinder and fixed the parts they did not. The result is the smoothest, most satisfying grinder we have ever made."))+
+  feat_row('grind_b','Ball Bearing Spin System','Effortless, butter-smooth grinding. Three to four rotations and you are done.')+
+  feat_row('lid','Anti-Jam Design','Eliminates buildup and sticking. No resistance. No frustration. Just works.',rev=True)+
+  feat_row('tooth','Precision Machined Aluminum','Large capacity chamber. Magnetic closure that snaps shut clean every time. Built to last.')+
+  promo_d('BEAR20','20% off at checkout','Early bird window — two weeks only. Pre-orders ship early April.')+
+  btn_t('Pre-Order the V3 Now — Use Code BEAR20')+signoff('Amit','Founder | Bear Grinder','beargrinder.com',"Thanks for being a Bear Grinder fan. This one is worth it.")+ftr()+
+  hs_panel('e01a','The V3 Is Here | 20% Off for the Next 2 Weeks','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The wait is over. The Bear Grinder V3 is officially here, and it is built different.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;We took everything people loved about Bear Grinder and fixed the parts they did not. The result is the smoothest, most satisfying grinder we have ever made.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#fff;"&gt;What is new in the V3:&lt;/strong&gt;&lt;/p&gt;
+            &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
+              &lt;li&gt;Ball bearing spin system for effortless, butter-smooth grinding&lt;/li&gt;
+              &lt;li&gt;Anti-jam design that eliminates buildup and sticking&lt;/li&gt;
+              &lt;li&gt;Large capacity chamber for bigger sessions&lt;/li&gt;
+              &lt;li&gt;Magnetic closure that snaps shut clean every time&lt;/li&gt;
+              &lt;li&gt;Precision machined aluminum built to last&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;No sticking. No resistance. No frustration. Just a grinder that works exactly the way it should.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 4px;"&gt;&lt;strong style="color:#3ecfcf;"&gt;Early Bird Pre-Order: 20% Off&lt;/strong&gt;&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Use code BEAR20 at checkout. Good for two weeks only. Pre-orders ship in early April.&lt;/p&gt;''','Pre-Order the V3 Now — Use Code BEAR20','https://beargrinder.com/collections/all')
 )},
 {"id":"e01b","seg":"B2C","num":"01B","name":"Launch - Lifestyle","subj":"Your grinder just got an upgrade","body":img_full('side_black',280)+(
   hdr()+enjoy_hero('side_black')+
   dark_sec(sal()+bd("The grinder that everyone who tries it can't stop spinning.","Bear Grinder V3. 608 bearing. Three rotations. Done. Magnetic lid, no threads. Machined from a single solid block of aerospace aluminum.","It doesn't look like other grinders. It doesn't feel like them either."))+
   enjoy_block()+promo_d('BEAR20','20% off - early bird, two weeks only')+btn_t('SHOP NOW')+signoff('Amit','Bear Grinder','beargrinder.com')+ftr()
 )},
-{"id":"e02a","seg":"B2C","num":"02A","name":"Social Proof - Dark","subj":"People keep saying the same thing about it","body":(
-  hdr()+quote_blk("I didn't expect it to feel like that.")+
-  dark_sec(sal()+bd("We've been sending early units out. The messages all say the same thing.","The bearing spin is hard to describe until you're holding it. Then it makes perfect sense.","Early bird window still open."))+
-  img_full('grind_b',260)+promo_d('BEAR20','20% off. Limited window.')+btn_w('ORDER NOW')+signoff('Amit','Bear Grinder','beargrinder.com')+ftr()
+{"id":"e02a","seg":"B2C","num":"02A","name":"D2C - Main - Email 2","subj":"People Are Loving the V3 | 20% Off Still Available","body":(
+  hdr()+quote_blk("[TESTIMONIAL 1]")+
+  dark_sec(sal()+bd("The V3 launched and the early response has been exactly what we expected."))+
+  quote_blk("[TESTIMONIAL 2]")+
+  dark_sec(bd("If you have been on the fence, now is the time.","The early bird offer is still live — 20% off with code BEAR20 — but the two-week window is closing. Pre-orders ship early April."))+
+  promo_d('BEAR20','20% off. Window closing.')+btn_w('Pre-Order the V3 — Use Code BEAR20')+signoff('Amit','Founder | Bear Grinder','beargrinder.com')+ftr()+
+  hs_panel('e02a','People Are Loving the V3 | 20% Off Still Available','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The V3 launched and the early response has been exactly what we expected.&lt;/p&gt;
+            &lt;!-- TESTIMONIAL BLOCK --&gt;
+            &lt;div style="border-left:3px solid #3ecfcf;padding:12px 16px;margin:0 0 13px;background:rgba(62,207,207,.05);"&gt;
+              &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-style:italic;line-height:1.82;color:rgba(255,255,255,.75);margin:0;"&gt;[TESTIMONIAL 1]&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div style="border-left:3px solid #3ecfcf;padding:12px 16px;margin:0 0 13px;background:rgba(62,207,207,.05);"&gt;
+              &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-style:italic;line-height:1.82;color:rgba(255,255,255,.75);margin:0;"&gt;[TESTIMONIAL 2]&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;If you have been on the fence, now is the time.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The early bird offer is still live — 20% off with code &lt;strong style="color:#3ecfcf;"&gt;BEAR20&lt;/strong&gt; — but the two-week window is closing. Pre-orders ship early April.&lt;/p&gt;''','Pre-Order the V3 — Use Code BEAR20','https://beargrinder.com/collections/all')
 )},
 {"id":"e02b","seg":"B2C","num":"02B","name":"Social Proof - Light","subj":"People can't stop spinning it","body":(
   hdr(light=True)+img_full('side_black',300)+
   white_sec(sal(light=True)+h1l("The reaction is always the same.")+bd("Three or four rotations and it's done. People pick it up and immediately want to do it again.","That's not a coincidence - it's the 608 bearing doing exactly what it's supposed to do.","Early bird pricing is still live.",light=True))+
   quote_blk("Once you feel it, you get it.",light=True)+promo_l('BEAR20','20% off at beargrinder.com')+btn_b('ORDER NOW')+signoff('Amit','Bear Grinder','beargrinder.com',light=True)+ftr(light=True)
 )},
-{"id":"e03a","seg":"B2C","num":"03A","name":"Last Chance","subj":"48 hours left on the early bird","body":img_full('hero',280)+(
-  hdr()+urgency('Early Bird Ends In','48 HRS')+
-  dark_sec(sal()+bd("The BEAR20 discount closes in 48 hours.","After that it's full price. If you want one of the first units out the door, this is the window."))+
-  promo_d('BEAR20','20% off - expires in 48 hours','No extensions.')+btn_t('GRAB YOURS NOW')+signoff('Amit','Bear Grinder','beargrinder.com')+ftr()
+{"id":"e03a","seg":"B2C","num":"03A","name":"D2C - Main - Email 3","subj":"48 Hours Left | 20% Off the Bear Grinder V3","body":img_full('hero',280)+(
+  hdr()+urgency('Early Bird Closes In','48 HRS')+
+  dark_sec(sal()+bd("Last call.","The early bird discount closes in 48 hours. After that, BEAR20 is gone and pre-order pricing goes with it.","No jamming. No sticking. Just a grinder that works the way it should."))+
+  promo_d('BEAR20','20% off at checkout — expires in 48 hours','Pre-orders ship early April.')+btn_t('Lock In Your Order Now')+signoff('Amit','Founder | Bear Grinder','beargrinder.com')+ftr()+
+  hs_panel('e03a','48 Hours Left | 20% Off the Bear Grinder V3','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Last call.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The early bird discount closes in 48 hours. After that, BEAR20 is gone and pre-order pricing goes with it.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;No jamming. No sticking. Just a grinder that works the way it should.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Use code &lt;strong style="color:#3ecfcf;"&gt;BEAR20&lt;/strong&gt; at checkout for 20% off. Pre-orders ship early April.&lt;/p&gt;''','Lock In Your Order Now','https://beargrinder.com/collections/all')
 )},
 {"id":"e04a","seg":"B2C","num":"04A","name":"Evergreen - Dark","subj":"The grinder that changed how people think about grinders","body":img_full('hero',280)+(
   hdr()+img_overlay('hero','Enjoy The Grind.','Available now at beargrinder.com')+
@@ -274,12 +381,32 @@ emails = [
   stats_bar([('$49.99','MSRP'),('608','Ball Bearing'),('608','Bearing'),('3-4','Rotations')],light=True)+
   btn_b('SHOP NOW')+enjoy_block(light=True)+signoff('Amit','Bear Grinder','beargrinder.com',light=True)+ftr(light=True)
 )},
-{"id":"e05a","seg":"Wholesale","num":"05A","name":"Announcement - Dark","subj":"New product worth putting on your shelf - Bear Grinder","body":(
-  hdr()+stripe('WHOLESALE PRE-ORDERS OPEN | TWO-WEEK LAUNCH WINDOW')+img_overlay('hero','A Product Your Customers Will Ask For.','Bear Grinder V3 - Wholesale Now Available')+
-  dark_sec(sal()+bd("608 ball bearing. Three to four rotations, done. Magnetic closure. Machined from a single block of aerospace aluminum.","The honest reason it sells: anyone who picks it up wants to keep spinning it. That tactile moment is your sales floor."))+
-  feat_grid([('tooth','Precision Tooth Design','High-low pattern. Fluffy, airy grind. No over-processing.'),('grind_b','608 Ball Bearing','3-4 rotations. Stays smooth for life.'),('lid','Magnetic Closure','Zero threads, zero jamming - ever.'),('collect','Large Collection Chamber','Generous catch area. Easy access.')])+
-  terms_blk(['10% pre-order discount on first buy','50% deposit secures inventory','Ships early April','One complimentary unit with first order'])+
-  btn_w('REPLY TO DISCUSS PRICING')+signoff('Amit Gorodetzer','Founder & CEO, Bear Grinder',SE)+ftr(SE)
+{"id":"e05a","seg":"Wholesale","num":"05A","name":"Wholesale - Main","subj":"Bear Grinder V3 | Wholesale Pre-Orders Now Open","body":(
+  hdr()+stripe('WHOLESALE PRE-ORDERS OPEN | TWO-WEEK LAUNCH WINDOW')+img_overlay('hero','A Product Your Customers Will Come Back For.','Bear Grinder V3 — Wholesale Pre-Orders Now Open')+
+  dark_sec(sal()+bd("The Bear Grinder V3 is launching, and we are opening pre-orders for wholesale accounts now.","If your customers have complained about grinders that jam, stick, or wear out fast, the V3 fixes all of it. This is the grinder they will come back to buy again."))+
+  feat_grid([('tooth','Precision Tooth Design','High-low pattern. Fluffy, airy grind. No over-processing.'),('grind_b','Ball Bearing Spin System','Smooth, effortless rotation every time. Stays smooth for life.'),('lid','Anti-Jam Design','Prevents buildup and thread locking. Zero jamming — ever.'),('collect','Large Capacity Chamber','Built for heavy use. Generous catch area. Easy access.')])+
+  terms_blk(['10% discount on all pre-order units','50% deposit to secure your inventory','Units ship early April','One complimentary display unit with every order'])+
+  dark_sec(bd("The display unit lets your staff experience the product firsthand so they can sell it with confidence. Customers who touch it buy it.","This pricing is available for two weeks only. Reply to place a pre-order or get full wholesale pricing."))+
+  btn_w('REPLY TO DISCUSS PRICING')+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
+  hs_panel('e05a','Bear Grinder V3 | Wholesale Pre-Orders Now Open','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The Bear Grinder V3 is launching, and we are opening pre-orders for wholesale accounts now.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;If your customers have complained about grinders that jam, stick, or wear out fast, the V3 fixes all of it. This is the grinder they will come back to buy again.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#fff;"&gt;What makes the V3 different:&lt;/strong&gt;&lt;/p&gt;
+            &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
+              &lt;li&gt;Ball bearing spin system for smooth, effortless rotation every time&lt;/li&gt;
+              &lt;li&gt;Anti-jam design that prevents buildup and thread locking&lt;/li&gt;
+              &lt;li&gt;Large capacity chamber built for heavy use&lt;/li&gt;
+              &lt;li&gt;Magnetic closure that holds secure and opens clean&lt;/li&gt;
+              &lt;li&gt;Precision machined aluminum construction built to last&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#3ecfcf;"&gt;Wholesale Pre-Order Terms:&lt;/strong&gt;&lt;/p&gt;
+            &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
+              &lt;li&gt;10% discount on all pre-order units&lt;/li&gt;
+              &lt;li&gt;50% deposit to secure your inventory&lt;/li&gt;
+              &lt;li&gt;Units ship early April&lt;/li&gt;
+              &lt;li&gt;Every order includes one complimentary unit for in-store display or personal use&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The display unit lets your staff experience the product firsthand so they can sell it with confidence. Customers who touch it buy it.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;This pricing is available for two weeks only. Reply to this email to place a pre-order or get full wholesale pricing.&lt;/p&gt;''','Reply to Discuss Pricing','mailto:Hello@BearGrinder.com')
 )},
 {"id":"e05b","seg":"Wholesale","num":"05B","name":"Announcement - Light","subj":"A grinder your customers will come back for","body":(
   hdr(light=True)+teal_stripe('WHOLESALE PRE-ORDERS OPEN | TWO-WEEK LAUNCH WINDOW')+img_full('side_black',280)+
@@ -288,25 +415,65 @@ emails = [
   terms_blk(['10% pre-order discount','50% deposit secures inventory','Ships early April','One unit complimentary'],light=True)+
   btn_b('REPLY TO DISCUSS PRICING')+signoff('Amit Gorodetzer','Founder & CEO, Bear Grinder',SE,light=True)+ftr(SE,light=True)
 )},
-{"id":"e06a","seg":"Wholesale","num":"06A","name":"Margin & Demand","subj":"Quick follow-up on Bear Grinder","body":(
+{"id":"e06a","seg":"Wholesale","num":"06A","name":"Wholesale - Main - Email 2","subj":"Bear Grinder V3 | The Margin and Demand Story","body":(
   hdr()+img_full('built',280)+
-  dark_sec(sal()+bd("Wanted to follow up in case my last email got buried.","The margin structure scales with volume. Distributor margin at MSRP runs well above category average - that's by design.","Happy to send a sample before you commit. No strings."))+
-  stats_bar([('$49.99','MSRP'),('62.5%','Dist. Margin'),('608','Ball Bearing'),('3-4','Rotations')])+
-  btn_w('REPLY TO CONNECT')+signoff('Amit','Bear Grinder',SE)+ftr(SE)
+  dark_sec(sal()+bd("Following up on the V3 pre-order we sent over.","Grinders are one of the most consistent repeat-purchase categories in smoke retail. Customers who find one they trust come back. The V3 is built to be that grinder.","The ball bearing system and anti-jam design are things customers notice the second they pick it up. That in-hand experience is what drives the sale — which is exactly why we include a free display unit with every pre-order."))+
+  stats_bar([('$49.99','MSRP'),('[INSERT]','Wholesale Margin'),('Ball','Bearing'),('Anti','Jam')])+
+  dark_sec(bd("[INSERT WHOLESALE PRICING TIER]"))+
+  terms_blk(['10% launch discount','50% deposit to secure inventory','Ships early April','Free display unit with every order'])+
+  btn_w('REPLY TO GET FULL PRICING')+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
+  hs_panel('e06a','Bear Grinder V3 | The Margin and Demand Story','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Following up on the V3 pre-order we sent over.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Grinders are one of the most consistent repeat-purchase categories in smoke retail. Customers who find one they trust come back. The V3 is built to be that grinder.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The ball bearing system and anti-jam design are things customers notice the second they pick it up. That in-hand experience is what drives the sale — which is exactly why we include a free display unit with every pre-order.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#fff;"&gt;What the numbers look like for your store:&lt;/strong&gt;&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.55);margin:0 0 13px;font-style:italic;"&gt;[INSERT WHOLESALE PRICING TIER]&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#3ecfcf;"&gt;Pre-Order Terms — Two Weeks Only:&lt;/strong&gt;&lt;/p&gt;
+            &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
+              &lt;li&gt;10% launch discount&lt;/li&gt;
+              &lt;li&gt;50% deposit to secure inventory&lt;/li&gt;
+              &lt;li&gt;Ships early April&lt;/li&gt;
+              &lt;li&gt;Free display unit with every order&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Reply here to get full pricing and lock in your allocation.&lt;/p&gt;''','Reply to Get Full Pricing','mailto:Hello@BearGrinder.com')
 )},
-{"id":"e07a","seg":"Wholesale","num":"07A","name":"Pre-Order Closing","subj":"Closing out wholesale pre-orders this week","body":(
-  hdr()+dark_sec(sal()+bd("Wrapping up wholesale pre-orders this week.","After Friday the launch discount goes away and inventory allocation locks.","Even a small first order to test in your store. Now is the window. Shipping early April."))+
-  img_full('hero',200)+btn_w('PLACE YOUR PRE-ORDER')+signoff('Amit','Bear Grinder',SE)+ftr(SE)
+{"id":"e07a","seg":"Wholesale","num":"07A","name":"Wholesale - Main - Email 3","subj":"Pre-Order Window Closing | Bear Grinder V3","body":(
+  hdr()+dark_sec(sal()+bd("Last chance to lock in V3 launch pricing.","The 10% discount and free display unit close out in the next few days. After that, standard wholesale pricing applies and first-run inventory gets allocated to confirmed orders.","Units are limited on the first production run. Pre-orders determine who gets stocked for April.","Reply here and we will get your order confirmed fast."))+
+  img_full('hero',200)+btn_w('PLACE YOUR PRE-ORDER')+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
+  hs_panel('e07a','Pre-Order Window Closing | Bear Grinder V3','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Last chance to lock in V3 launch pricing.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The 10% discount and free display unit close out in the next few days. After that, standard wholesale pricing applies and first-run inventory gets allocated to confirmed orders.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Units are limited on the first production run. Pre-orders determine who gets stocked for April.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Reply here and we will get your order confirmed fast.&lt;/p&gt;''','Place Your Pre-Order','mailto:Hello@BearGrinder.com')
 )},
 {"id":"e08a","seg":"Wholesale","num":"08A","name":"Reorder","subj":"Bear Grinder is on shelves - let's keep it moving","body":(
   hdr()+dark_sec(sal()+bd("Thanks for carrying Bear Grinder. We want to make sure it keeps performing for you.","If inventory is running low, we turn around restocks fast. The bearing spin closes the sale - just make sure people have a chance to feel it.","Reply here. We move fast."))+
   img_full('grind_b',200)+btn_w('REORDER NOW')+signoff('Amit','Bear Grinder',SE)+ftr(SE)
 )},
-{"id":"e09a","seg":"Distributor","num":"09A","name":"Opportunity - Dark","subj":"Distribution opportunity - Bear Grinder","body":img_full('built',280)+(
-  hdr()+img_overlay('hero','One Spin. You\'ll Get It.','Bear Grinder Distribution - Open Markets Available')+
-  dark_sec(sal()+bd("My name is Amit, founder of Bear Grinder. We're building out our distribution network and believe there's a real opportunity here.","608 ball bearing, three rotations done. Magnetic closure, no threads. Engineered to last.","$49.99 MSRP. Margin compounds at volume. Open to exclusivity conversations in the right markets."))+
-  stats_bar([('$49.99','MSRP'),('608','Ball Bearing'),('608','Bearing'),('3-4','Rotations')])+
-  btn_w('SCHEDULE A CALL')+signoff('Amit Gorodetzer','Founder & CEO, Bear Grinder',SE)+ftr(SE)
+{"id":"e09a","seg":"Distributor","num":"09A","name":"Distributor - Main","subj":"Bear Grinder V3 | Distribution Opportunity — Pre-Orders Open Now","body":img_full('built',280)+(
+  hdr()+img_overlay('hero','One Spin. You\'ll Get It.','Bear Grinder Distribution — Open Markets Available')+
+  dark_sec(sal()+bd("The Bear Grinder V3 is launching, and we are building out our distribution network now. If you are looking for a product with real retail pull and a clean margin story, this is worth a conversation.","The V3 solves the core complaints that follow every grinder category — jamming, sticking, and wearing out. We built the fix in from the ground up."))+
+  feat_grid([('grind_b','Ball Bearing Spin System','Smooth, consistent rotation for the life of the product.'),('lid','Anti-Jam Design','Eliminates buildup and thread issues entirely.'),('tooth','Large Capacity Chamber','Built for high-frequency use.'),('collect','Precision Machined Aluminum','Built to hold up in retail. Magnetic closure, clean handling.')])+
+  terms_blk(['10% launch discount on pre-order inventory','50% deposit to reserve stock','Units ship early April','Pricing tiers, regional availability, and exclusivity options available'])+
+  dark_sec(bd("We are selective about distribution partners at launch and moving quickly. This pricing window closes in two weeks.","If you want to see full wholesale pricing, volume tiers, or discuss regional partnership, reply here or let me know a good time to connect."))+
+  btn_w('SCHEDULE A CALL')+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
+  hs_panel('e09a','Bear Grinder V3 | Distribution Opportunity — Pre-Orders Open Now','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The Bear Grinder V3 is launching, and we are building out our distribution network now. If you are looking for a product with real retail pull and a clean margin story, this is worth a conversation.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The V3 solves the core complaints that follow every grinder category — jamming, sticking, and wearing out. We built the fix in from the ground up.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#fff;"&gt;Product:&lt;/strong&gt;&lt;/p&gt;
+            &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
+              &lt;li&gt;Ball bearing spin system for smooth, consistent rotation&lt;/li&gt;
+              &lt;li&gt;Anti-jam design that eliminates buildup and thread issues&lt;/li&gt;
+              &lt;li&gt;Large capacity chamber built for high-frequency use&lt;/li&gt;
+              &lt;li&gt;Magnetic closure for clean, reliable handling&lt;/li&gt;
+              &lt;li&gt;Precision machined aluminum — built to hold up in retail&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#3ecfcf;"&gt;Distribution Pre-Order Terms:&lt;/strong&gt;&lt;/p&gt;
+            &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
+              &lt;li&gt;10% launch discount on pre-order inventory&lt;/li&gt;
+              &lt;li&gt;50% deposit to reserve stock&lt;/li&gt;
+              &lt;li&gt;Units ship early April&lt;/li&gt;
+              &lt;li&gt;Pricing tiers, regional availability, and exclusivity options available&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;We are selective about distribution partners at launch and moving quickly. This pricing window closes in two weeks.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;If you want to see full wholesale pricing, volume tiers, or discuss regional partnership, reply here or let me know a good time to connect.&lt;/p&gt;''','Schedule a Call','mailto:Hello@BearGrinder.com')
 )},
 {"id":"e09b","seg":"Distributor","num":"09B","name":"Opportunity - Light","subj":"A distribution opportunity worth 10 minutes of your time","body":(
   hdr(light=True)+img_full('side_black',280)+
@@ -314,13 +481,35 @@ emails = [
   stats_bar([('$49.99','MSRP'),('608','Ball Bearing'),('608','Bearing'),('3-4','Rotations')],light=True)+
   btn_b('SCHEDULE A CALL')+signoff('Amit Gorodetzer','Founder & CEO, Bear Grinder',SE,light=True)+ftr(SE,light=True)
 )},
-{"id":"e10a","seg":"Distributor","num":"10A","name":"Follow-Up","subj":"Following up - Bear Grinder distribution","body":(
-  hdr()+dark_sec(sal()+bd("Following up on my note from last week.","We're placing distribution partners in markets without current coverage. Industry-leading design, $49.99 MSRP - easy story for a sales team to tell.","15-minute call this week?"))+
-  img_full('old_new',200)+btn_w("LET'S TALK")+signoff('Amit','Bear Grinder',SE)+ftr(SE)
+{"id":"e10a","seg":"Distributor","num":"10A","name":"Distributor - Main - Email 2","subj":"Bear Grinder V3 | Territory Opportunity Still Open","body":(
+  hdr()+img_full('old_new',200)+
+  dark_sec(sal()+bd("Following up on the V3 distribution opportunity.","The grinder market has a real gap in the $30-$60 retail range — most products in that tier carry the same jamming and durability complaints. The V3 was built to own that space, and we are building the distribution network now.","We are being selective about launch partners, and a handful of territories are still open for the first wave."))+
+  dark_sec(h1d('What We Are Looking For',20)+bd("Established retail relationships in smoke, dispensary, or specialty channels.","Ability to move consistent volume per quarter.","Interest in growing with the brand long term.","Regional territory conversations happen now, before we go broad. Pre-order terms lock in for two more weeks."))+
+  btn_w("LET'S TALK")+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
+  hs_panel('e10a','Bear Grinder V3 | Territory Opportunity Still Open','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Following up on the V3 distribution opportunity.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The grinder market has a real gap in the $30-$60 retail range — most products in that tier carry the same jamming and durability complaints. The V3 was built to own that space, and we are building the distribution network now.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;We are being selective about launch partners, and a handful of territories are still open for the first wave.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#fff;"&gt;What we are looking for:&lt;/strong&gt;&lt;/p&gt;
+            &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
+              &lt;li&gt;Established retail relationships in smoke, dispensary, or specialty channels&lt;/li&gt;
+              &lt;li&gt;Ability to move consistent volume per quarter&lt;/li&gt;
+              &lt;li&gt;Interest in growing with the brand long term&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Regional territory conversations happen now, before we go broad. Pre-order terms lock in for two more weeks.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Reply here or let me know a good time to connect.&lt;/p&gt;''','Reply Here to Connect','mailto:Hello@BearGrinder.com')
 )},
-{"id":"e11a","seg":"Distributor","num":"11A","name":"Final Call","subj":"Last note from me on this","body":(
-  hdr()+dark_sec(sal()+bd("This is my last follow-up. Respecting your inbox.","We're finalizing distribution partners now. Once those slots are locked, I won't be reaching back out.","10 minutes is all it takes. Happy to send a sample first - no commitment required."))+
-  img_full('built',200)+btn_w('REPLY TO CONNECT')+signoff('Amit','Bear Grinder',SE)+ftr(SE)
+{"id":"e11a","seg":"Distributor","num":"11A","name":"Distributor - Main - Email 3","subj":"Final Call | V3 Launch Terms Close This Week","body":(
+  hdr()+dark_sec(sal()+bd("Last email before we close out pre-launch distribution terms.","The V3 ships in early April. Partners locked in this week get the 10% pre-order discount, first-wave inventory allocation, and regional territory discussion before we open distribution broadly.","After this window, standard pricing applies and territory conversations move to a first-come basis.","If you have been evaluating this, the time to move is now. Reply here and we will get the conversation going."))+
+  img_full('built',200)+btn_w('REPLY TO CONNECT')+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
+  hs_panel('e11a','Final Call | V3 Launch Terms Close This Week','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Last email before we close out pre-launch distribution terms.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The V3 ships in early April. Partners locked in this week get:&lt;/p&gt;
+            &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
+              &lt;li&gt;10% pre-order discount&lt;/li&gt;
+              &lt;li&gt;First-wave inventory allocation&lt;/li&gt;
+              &lt;li&gt;Regional territory discussion before we open distribution broadly&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;After this window, standard pricing applies and territory conversations move to a first-come basis.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;If you have been evaluating this, the time to move is now. Reply here and we will get the conversation going.&lt;/p&gt;''','Reply to Connect','mailto:Hello@BearGrinder.com')
 )},
 {"id":"e12a","seg":"Distributor","num":"12A","name":"Reactivation","subj":"We've got inventory - wanted to circle back","body":(
   hdr()+dark_sec(sal()+bd("We connected a few months back. Wanted to circle back now that the latest model is live and shipping.","Inventory ready. Active partners in several markets. Product is proving itself on the floor.","Quick call or a sample - whatever makes sense."))+
@@ -661,6 +850,7 @@ window.onerror=function(msg,src,line){showErr('Line '+line+': '+msg);return fals
 
 /* ── LOCK SCREEN ── */
 var PIN_HASH='a]PINHASH[a'; // SHA-256 of the 6-digit PIN
+var PIN_HASH2='a]PINHASH2[a'; // SHA-256 of secondary PIN
 var UNLOCKED=false;
 function onPinInput(el){
   var val=el.value.replace(/\D/g,'');
@@ -676,7 +866,7 @@ async function checkPin(){
   var val=el.value.replace(/\D/g,'');
   if(val.length!==6) return;
   var hash=await sha256(val);
-  if(hash===PIN_HASH){
+  if(hash===PIN_HASH||hash===PIN_HASH2){
     UNLOCKED=true;
     var lock=document.getElementById('lockScreen');
     if(lock){lock.style.transition='opacity .3s';lock.style.opacity='0';setTimeout(function(){lock.style.display='none';},300);}
@@ -2771,8 +2961,9 @@ HTML = f"""<!DOCTYPE html>
 </html>"""
 
 out=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'index.html')
-# Inject PIN hash into JS (raw string can't use f-string)
+# Inject PIN hashes into JS (raw string can't use f-string)
 HTML = HTML.replace('a]PINHASH[a', PIN_HASH)
+HTML = HTML.replace('a]PINHASH2[a', PIN_HASH2)
 with open(out,'w',encoding='utf-8') as f:
     f.write(HTML)
 
