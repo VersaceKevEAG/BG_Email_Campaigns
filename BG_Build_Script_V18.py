@@ -458,7 +458,7 @@ emails = [
   feat_row('tooth','Large Capacity Chamber','Built for high-frequency retail use. More product per grind, less effort per session.')+
   feat_row('collect','Aerospace Grade Aluminum','Precision machined from aerospace grade aluminum. Holds up in retail, looks sharp on a shelf, and lasts years in daily use.',rev=True)+
   terms_blk(['10% launch discount on pre-order inventory','50% deposit to reserve stock','Units ship early April','Pricing tiers, regional availability, and exclusivity options available'])+
-  dark_sec(bd("We are selective about distribution partners at launch and moving quickly. This pricing window closes in two weeks.","If you want to see full wholesale pricing, volume tiers, or discuss regional partnership, reply here or let me know a good time to connect."))+
+  dark_sec(bd("We are being thoughtful about who we partner with at launch — the right fit in the right markets matters more than volume. Pre-order pricing is open for two weeks, and we would rather spend that time on the right conversation.","If you want to see full wholesale pricing, volume tiers, or discuss regional partnership, reply here or let me know a good time to connect."))+
   btn_w('SCHEDULE A CALL')+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
   hs_panel('e09a','Bear Grinder V3 | Distribution Opportunity — Pre-Orders Open Now','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The new Bear Grinder (V3) is launching, and we are building out our distribution network now. If you are looking for a product with real retail pull and a clean margin story, this is worth a conversation.&lt;/p&gt;
             &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The V3 solves the core complaints that follow every grinder category — jamming, sticking, wearing out, and harsh grind. We fixed it all with the new Bear Grinder.&lt;/p&gt;
@@ -477,7 +477,7 @@ emails = [
               &lt;li&gt;Units ship early April&lt;/li&gt;
               &lt;li&gt;Pricing tiers, regional availability, and exclusivity options available&lt;/li&gt;
             &lt;/ul&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;We are selective about distribution partners at launch and moving quickly. This pricing window closes in two weeks.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;We are being thoughtful about who we partner with at launch — the right fit in the right markets matters more than volume. Pre-order pricing is open for two weeks, and we would rather spend that time on the right conversation.&lt;/p&gt;
             &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;If you want to see full wholesale pricing, volume tiers, or discuss regional partnership, reply here or let me know a good time to connect.&lt;/p&gt;''','Schedule a Call','mailto:Hello@BearGrinder.com')
 )},
 {"id":"e09b","seg":"Distributor","num":"09B","name":"Opportunity - Light","subj":"A distribution opportunity worth 10 minutes of your time","body":(
