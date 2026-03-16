@@ -486,35 +486,40 @@ emails = [
   stats_bar([('$49.99','MSRP'),('608','Ball Bearing'),('608','Bearing'),('3-4','Rotations')],light=True)+
   btn_b('SCHEDULE A CALL')+signoff('Amit Gorodetzer','Founder & CEO, Bear Grinder',SE,light=True)+ftr(SE,light=True)
 )},
-{"id":"e10a","seg":"Distributor","num":"10A","name":"Distributor - Main - Email 2","subj":"Bear Grinder V3 | Territory Opportunity Still Open","body":(
-  hdr()+img_full('old_new',200)+
-  dark_sec(sal()+bd("Following up on the V3 distribution opportunity.","The grinder market has a real gap in the $30-$60 retail range — most products in that tier carry the same jamming and durability complaints. The V3 was built to own that space, and we are building the distribution network now.","We are being selective about launch partners, and a handful of territories are still open for the first wave."))+
-  dark_sec(h1d('What We Are Looking For',20)+bd("Established retail relationships in smoke, dispensary, or specialty channels.","Ability to move consistent volume per quarter.","Interest in growing with the brand long term.","Regional territory conversations happen now, before we go broad. Pre-order terms lock in for two more weeks."))+
+{"id":"e10a","seg":"Distributor","num":"10A","name":"Distributor - Main - Email 2","subj":"New Bear Grinder V3 | Territory Opportunity Still Open","body":(
+  hdr()+teal_stripe('FOLLOW-UP | TERRITORY AVAILABILITY')+
+  img_overlay('old_new','The Market Gap Is Real.','New Bear Grinder V3 — Open Territories Available')+
+  dark_sec(sal()+bd("Following up on the new Bear Grinder (V3) distribution opportunity.","The grinder market has a real gap in the $30-$60 retail range. Most products in that tier carry the same complaints — jamming, sticking, wearing out, and harsh grind. The new Bear Grinder was built to own that space, and we are building the distribution network now."))+
+  feat_row('grind_b','Established Retail Reach','You have the relationships — smoke shops, dispensaries, specialty channels — and the ability to move consistent volume per quarter.')+
+  feat_row('built','A Long-Term Brand Partnership','Bear Grinder is building for the long term. We want distribution partners who are growing with us as the brand scales.',rev=True)+
+  teal_stripe('A HANDFUL OF TERRITORIES STILL OPEN FOR THE FIRST WAVE')+
+  dark_sec(bd("We want the right partners in the right markets. If this looks like a fit, pre-order terms are open for two more weeks and we would love to have a conversation before we close out the first wave."))+
   btn_w("LET'S TALK")+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
-  hs_panel('e10a','Bear Grinder V3 | Territory Opportunity Still Open','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Following up on the V3 distribution opportunity.&lt;/p&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The grinder market has a real gap in the $30-$60 retail range — most products in that tier carry the same jamming and durability complaints. The V3 was built to own that space, and we are building the distribution network now.&lt;/p&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;We are being selective about launch partners, and a handful of territories are still open for the first wave.&lt;/p&gt;
+  hs_panel('e10a','New Bear Grinder V3 | Territory Opportunity Still Open','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Following up on the new Bear Grinder (V3) distribution opportunity.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The grinder market has a real gap in the $30-$60 retail range. Most products in that tier carry the same complaints — jamming, sticking, wearing out, and harsh grind. The new Bear Grinder was built to own that space.&lt;/p&gt;
             &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#fff;"&gt;What we are looking for:&lt;/strong&gt;&lt;/p&gt;
             &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
               &lt;li&gt;Established retail relationships in smoke, dispensary, or specialty channels&lt;/li&gt;
               &lt;li&gt;Ability to move consistent volume per quarter&lt;/li&gt;
               &lt;li&gt;Interest in growing with the brand long term&lt;/li&gt;
             &lt;/ul&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Regional territory conversations happen now, before we go broad. Pre-order terms lock in for two more weeks.&lt;/p&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Reply here or let me know a good time to connect.&lt;/p&gt;''','Reply Here to Connect','mailto:Hello@BearGrinder.com')
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;We want the right partners in the right markets. Pre-order terms are open for two more weeks — if this looks like a fit, we would love to have a conversation before we close out the first wave.&lt;/p&gt;''','Reply Here to Connect','mailto:Hello@BearGrinder.com')
 )},
-{"id":"e11a","seg":"Distributor","num":"11A","name":"Distributor - Main - Email 3","subj":"Final Call | V3 Launch Terms Close This Week","body":(
-  hdr()+dark_sec(sal()+bd("Last email before we close out pre-launch distribution terms.","The V3 ships in early April. Partners locked in this week get the 10% pre-order discount, first-wave inventory allocation, and regional territory discussion before we open distribution broadly.","After this window, standard pricing applies and territory conversations move to a first-come basis.","If you have been evaluating this, the time to move is now. Reply here and we will get the conversation going."))+
-  img_full('built',200)+btn_w('REPLY TO CONNECT')+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
-  hs_panel('e11a','Final Call | V3 Launch Terms Close This Week','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;Last email before we close out pre-launch distribution terms.&lt;/p&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The V3 ships in early April. Partners locked in this week get:&lt;/p&gt;
+{"id":"e11a","seg":"Distributor","num":"11A","name":"Distributor - Main - Email 3","subj":"Final Call | New Bear Grinder Launch Terms Close This Week","body":(
+  hdr()+teal_stripe('FINAL CALL | PRE-LAUNCH DISTRIBUTION TERMS CLOSING')+
+  img_overlay('hero','Last Chance to Lock In Launch Pricing.','The new Bear Grinder ships early April')+
+  terms_blk(['10% pre-order discount on first-wave inventory','First-wave inventory allocation — limited production run','Regional territory conversation before broad rollout','Pre-order terms close this week — standard pricing applies after'])+
+  dark_sec(sal()+bd("This is the last note from me before we close out pre-launch terms.","The new Bear Grinder ships in early April. Partners who lock in now get the right pricing, the right inventory position, and first shot at territory conversations before we open distribution broadly.","If there is a fit here, this is a good time to find out. Reply here and let's get something on the calendar."))+
+  btn_w('REPLY TO CONNECT')+signoff('Amit','Bear Grinder',SE)+ftr(SE)+
+  hs_panel('e11a','Final Call | New Bear Grinder Launch Terms Close This Week','''            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;This is the last note from me before we close out pre-launch terms.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 6px;"&gt;&lt;strong style="color:#3ecfcf;"&gt;Partners who lock in now get:&lt;/strong&gt;&lt;/p&gt;
             &lt;ul style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;padding-left:20px;"&gt;
-              &lt;li&gt;10% pre-order discount&lt;/li&gt;
-              &lt;li&gt;First-wave inventory allocation&lt;/li&gt;
-              &lt;li&gt;Regional territory discussion before we open distribution broadly&lt;/li&gt;
+              &lt;li&gt;10% pre-order discount on first-wave inventory&lt;/li&gt;
+              &lt;li&gt;First-wave inventory allocation — limited production run&lt;/li&gt;
+              &lt;li&gt;Regional territory conversation before broad rollout&lt;/li&gt;
             &lt;/ul&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;After this window, standard pricing applies and territory conversations move to a first-come basis.&lt;/p&gt;
-            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;If you have been evaluating this, the time to move is now. Reply here and we will get the conversation going.&lt;/p&gt;''','Reply to Connect','mailto:Hello@BearGrinder.com')
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;The new Bear Grinder ships in early April. Partners who lock in now get the right pricing, the right inventory position, and first shot at territory conversations before we open distribution broadly.&lt;/p&gt;
+            &lt;p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.82;color:rgba(255,255,255,.75);margin:0 0 13px;"&gt;If there is a fit here, this is a good time to find out. Reply here and let's get something on the calendar.&lt;/p&gt;''','Reply to Connect','mailto:Hello@BearGrinder.com')
 )},
 {"id":"e12a","seg":"Distributor","num":"12A","name":"Reactivation","subj":"We've got inventory - wanted to circle back","body":(
   hdr()+dark_sec(sal()+bd("We connected a few months back. Wanted to circle back now that the latest model is live and shipping.","Inventory ready. Active partners in several markets. Product is proving itself on the floor.","Quick call or a sample - whatever makes sense."))+
