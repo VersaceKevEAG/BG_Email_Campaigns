@@ -724,6 +724,7 @@ window.onerror=function(msg,src,line){showErr('Line '+line+': '+msg);return fals
 
 /* ── LOCK SCREEN ── */
 var PIN_HASH='3849772cc907bffd9c5481ad9fc3acb529f57299b9c3f35569f45ecc19692320'; // SHA-256 of the 6-digit PIN
+var PIN_HASH2='3ec2cf533516e0be1ae76ae78aa820c1ce21b4ba8c01757aae7625308de23a0b'; // SHA-256 of secondary PIN
 var UNLOCKED=false;
 function onPinInput(el){
   var val=el.value.replace(/\D/g,'');
@@ -739,7 +740,7 @@ async function checkPin(){
   var val=el.value.replace(/\D/g,'');
   if(val.length!==6) return;
   var hash=await sha256(val);
-  if(hash===PIN_HASH){
+  if(hash===PIN_HASH||hash===PIN_HASH2){
     UNLOCKED=true;
     var lock=document.getElementById('lockScreen');
     if(lock){lock.style.transition='opacity .3s';lock.style.opacity='0';setTimeout(function(){lock.style.display='none';},300);}
